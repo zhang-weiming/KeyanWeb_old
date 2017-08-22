@@ -36,9 +36,9 @@ public class TransEServlet extends HttpServlet {
 		response.setCharacterEncoding("utf-8");
 		PrintWriter out = response.getWriter();
 		
-		String positionsAndSents = request.getParameter("sentsTransE");
-		String[] parts = positionsAndSents.split("\\|");
-		String[] positions = parts[0].trim().split(" ");
+		String positionsPara = request.getParameter("positions");
+		String sents = request.getParameter("sents");
+		String[] positions = positionsPara.trim().split(" ");
 		if(positions[0].equals("")) {
 			out.print(new String("ERROR|no data!"));
 		}
@@ -46,7 +46,7 @@ public class TransEServlet extends HttpServlet {
 			TransE transETool = new TransE();
 			int[] positionsInt = new int[positions.length];
 			for(int i = 0; i < positions.length; i++) positionsInt[i] = Integer.parseInt(positions[i]);
-			ArrayList<String> transEResult = transETool.process(positionsInt, parts[1]);
+			ArrayList<String> transEResult = transETool.process(positionsInt, sents);
 			if(transEResult == null) {
 				out.print(new String("ERROR|no data!"));
 			}

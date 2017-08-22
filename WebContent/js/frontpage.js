@@ -43,9 +43,9 @@ $(document).ready(function(){
 				
 				
 				// 与 TransEServlet 交互
-//				var positions_and_sents = pos_strs_positions + "|" + sInput;
 				$.post("transeservlet", {
-					sentsTransE: pos_strs_positions + "|" + sInput
+					positions: pos_strs_positions,
+					sents: sInput
 				}, function(result){
 					var pairs = result.split("|");
 					

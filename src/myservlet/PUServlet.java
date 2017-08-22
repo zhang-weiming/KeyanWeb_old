@@ -37,7 +37,7 @@ public class PUServlet extends HttpServlet {
 		response.setCharacterEncoding("utf-8");
 		PrintWriter out = response.getWriter();
 		
-		String sents = (String) request.getParameter("sents");
+		String sents = request.getParameter("sents");
 		String classifyResult = PU.svm_classify(sents);
 		if(classifyResult != null) {
 			out.print(classifyResult);

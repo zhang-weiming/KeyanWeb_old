@@ -177,9 +177,8 @@ public class TransE {
 							if(dist < MARGIN) {
 								flag = true;
 								mList.add(entity.get(i) + " " + entity.get(j));
+								System.out.println(entity.get(i) + ", " + entity.get(j) + " " + dist + " / " + MARGIN);
 							}
-							
-							System.out.println(entity.get(i) + ", " + entity.get(j) + " " + dist);
 						}
 					} // for
 				} // for
@@ -193,10 +192,10 @@ public class TransE {
 //					datas[i] = mList.get(i);
 //				}
 //				return datas;
-				System.out.println("[TransE]There they are: ");
-				for(int i = 0; i < mList.size(); i++) {
-					System.out.println(mList.get(i));
-				}
+//				System.out.println("[TransE]There they are: ");
+//				for(int i = 0; i < mList.size(); i++) {
+//					System.out.println(mList.get(i));
+//				}
 				return mList;
 			}
 			else {
