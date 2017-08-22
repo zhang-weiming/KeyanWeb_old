@@ -74,26 +74,12 @@ public class PU {
 		sents = Word2PUVec.process(sents);
 		
 		try {
-			// 把生成的向量写入临时文件中
-			File source_file = new File(SOURCE_FILE_PATH);
-			if(source_file.exists()) {
-				source_file.delete();
-			}
-			BufferedWriter bufw = new BufferedWriter(new FileWriter(SOURCE_FILE_PATH));
-			for(String sent : sents) {
-				bufw.write(sent);
-				bufw.flush();
-				bufw.newLine();
-			}
-			bufw.close();
-			System.out.println("create a source file (temp.txt)...");
-			
 			String resultFilePath = RESULT_DIR_PATH + "/result.txt";
 //			String resultFilePath = RESULT_DIR_PATH + "/" + System.currentTimeMillis() / 1000 + ".txt";
 			// String command = exePath + " " + sourcePath + " " + modelPath + " " + resultFilePath;
 			String svm_classify_command = "wine " + EXE_PATH + " " + SOURCE_FILE_PATH + " " + MODEL_FILE_PATH + " " + resultFilePath;
 			
-			source_file = new File(SOURCE_FILE_PATH);
+			File source_file = new File(SOURCE_FILE_PATH);
 			while(!source_file.exists()) {
 				System.out.println("source file does not exist...");
 				Thread.sleep(1000);

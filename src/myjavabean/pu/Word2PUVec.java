@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -17,7 +18,9 @@ import java.util.ArrayList;
 
 public class Word2PUVec {
 //	public static final String WEB_INF_DIR_PATH = MyPath.WEB_INF_DIR_PATH;
+	private static final String WEB_INF_DIR_PATH = MyPath.WEB_INF_DIR_PATH;
 	private static final String FEATURE_SET_FILE_PATH = MyPath.FEATURE_SET_FILE_PATH;
+	private static final String SOURCE_FILE_PATH = WEB_INF_DIR_PATH + "/data/pu/model/temp.txt";
 	
 	public static double calLen(double[] vector) {
 		double sum = 0.0;
@@ -64,7 +67,10 @@ public class Word2PUVec {
 		System.out.println("Word2PUVec start...");
 		try {
 			ArrayList<String> featureList = loadFeatureList(FEATURE_SET_FILE_PATH);
+//			File source_file = new File(SOURCE_FILE_PATH);
+//			if(source_file.exists()) source_file.delete();
 			
+			BufferedWriter bufw = new BufferedWriter(new FileWriter(SOURCE_FILE_PATH));
 			for(int i = 0; i < sents.length; i++) {
 				String[] words = sents[i].split(" ");
 				ArrayList<Integer> tempList = new ArrayList<Integer>();
@@ -89,13 +95,31 @@ public class Word2PUVec {
 				// 组合回一个句子，给 sent[i]
 				String temp = "";
 				for(int j = 0; j < tempListFromSet.size(); j++) {
-					temp = temp + tempListFromSet.get(j) + ":" + vector[tempListFromSet.get(j)] + " ";
+					temp = temp + (tempListFromSet.get(j) + 1) + ":" + vector[tempListFromSet.get(j)] + " ";
 				}
 				temp = temp.trim(); //remove the space characters ' '
 				
-				sents[i] = "1 " + temp;
+//				sents[i] = "1 " + temp;
+				bufw.write("1 " + temp);
+				bufw.flush();
+				bufw.newLine();
 				// 组合回一个句子，给 sent[i]
 			}
+			bufw.close();
+			System.out.println("create a source file (temp.txt)...");
+			
+//			// 把生成的向量写入临时文件中
+//			File source_file = new File(SOURCE_FILE_PATH);
+//			if(source_file.exists()) source_file.delete();
+//			BufferedWriter bufw = new BufferedWriter(new FileWriter(SOURCE_FILE_PATH));
+//			for(String sent : sents) {
+//				bufw.write(sent);
+//				bufw.flush();
+//				bufw.newLine();
+//			}
+//			bufw.close();
+//			System.out.println("create a source file (temp.txt)...");
+//			// 把生成的向量写入临时文件中
 			
 		} catch(Exception e) {
 			e.printStackTrace();
