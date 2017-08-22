@@ -33,17 +33,19 @@ $(document).ready(function(){
 				);
 				// 图-圆环-正、负面句子个数统计
 				
-				$.post("tempservlet", {
-					tempData: pos_strs_positions + "|" + sInput
-				}, function(result){
-					alert(result);
-				});
+//				// TempServlet 展示pos预测结果
+//				$.post("tempservlet", {
+//					tempData: pos_strs_positions + "|" + sInput
+//				}, function(result){
+//					alert(result);
+//				});
+//				// TempServlet 展示pos预测结果
 				
-				/*
+				
 				// 与 TransEServlet 交互
-				var positions_and_sents = pos_strs_positions + "|" + sInput;
+//				var positions_and_sents = pos_strs_positions + "|" + sInput;
 				$.post("transeservlet", {
-					sentsTransE: positions_and_sents
+					sentsTransE: pos_strs_positions + "|" + sInput
 				}, function(result){
 					var pairs = result.split("|");
 					
@@ -72,7 +74,7 @@ $(document).ready(function(){
 					
 				});
 				// 与 TransEServlet 交互
-				*/
+				
 			} // if
 			else {
 				alert("null");
