@@ -4,8 +4,15 @@ $(document).ready(function(){
 	// 自动填补textara
 	$("button.am-btn.am-btn-default").click(function(){
 		var sInput = $("textarea.sents").val();
-//		alert("点击成功");
+//		sInput_parts = sInput.split(/[。！？]/);
+//		str = "";
+//		for(i = 0; i < sInput_parts.length; i++) {
+//			str += "[" + i + "]" + sInput_parts[i] + "<br />";
+//		}
+//		$("div.div-test").html("<hr />" + str);
+//		alert("alert:\n" + str);
 
+		
 		// 与 PUServlet 交互
 		$.post("puservlet", {
 			sents: sInput
@@ -23,6 +30,24 @@ $(document).ready(function(){
 //				 	]
 //				 );
 //				 // 图-仪表盘-准确率
+				
+				// 分类颜色标注
+				positions = $.trim(pos_strs_positions).split(" ");
+				sInput_parts = sInput.split(/[。！？]/);
+				for(i = 0; i < sInput_parts.length; i++) {
+					temp_str = "<tr class=\"tr-display\">" + 
+								"<td class=\"td-column-label\">" + (i+1) + "</td>" + 
+								"<td class=\"td-column-content\">" + sInput_parts[i] + "</td>" + 
+							   "</tr>";
+					$(".table-display").append(temp_str);
+				}
+				// $("dt-column-label").width($("dt-column-label").height());
+				for(i = 0; i < positions.length; i++) {
+					$("td.td-column-content").eq(parseInt(positions[i])).css("background-color", "#5ff");
+				}
+
+				// $("#display-classification").html(parseInt(positions[0]) + parseInt(positions[1]));
+				// 分类颜色标注
 				
 				// 图-圆环-正、负面句子个数统计
 				$("div#main1").css("height", "400px");
@@ -82,5 +107,6 @@ $(document).ready(function(){
 			
 		});
 		// 与 PUServlet 交互
+		
 	});
 });

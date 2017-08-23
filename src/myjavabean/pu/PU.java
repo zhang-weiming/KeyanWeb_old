@@ -63,8 +63,13 @@ public class PU {
 		NlpirTest nlpir = new NlpirTest();
 
 		String[] sents = sInput.trim().split("[。 ！ ？]"); //split the input paragraph into several sents
+//		String tempStr = "[PU]\n";
+//		for(String str : sents) {
+//			tempStr += str + "\n";
+//		}
+//		System.out.println(tempStr);
 		for(int i = 0; i < sents.length; i++) {
-			if(!sents[i].equals("") && sents[i] != null) {
+			if(!sents[i].equals("")) {
 				sents[i] = nlpir.multProcess(sents[i]);
 			}
 		}

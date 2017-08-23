@@ -114,6 +114,11 @@ public class TransE {
 
 		// 由 pos的下标 和 所有句子，得到 pos 句子，放在 pos_sents 中
 		String[] sents = sInput.split("[。 ！ ？]");
+//		String tempStr = "[TransE]\n";
+//		for(String str : sents) {
+//			tempStr += str + "\n";
+//		}
+//		System.out.println(tempStr);
 		String[] pos_sents = new String[positions.length];
 		for(int i = 0; i < pos_sents.length; i++) {
 			pos_sents[i] = sents[ positions[i] ];
