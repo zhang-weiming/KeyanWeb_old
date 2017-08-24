@@ -32,6 +32,7 @@ $(document).ready(function(){
 //				 // 图-仪表盘-准确率
 				
 				// 分类颜色标注
+				$("tr").remove(".tr-display");
 				positions = $.trim(pos_strs_positions).split(" ");
 				sInput_parts = sInput.split(/[。！？]/);
 				for(i = 0; i < sInput_parts.length; i++) {
