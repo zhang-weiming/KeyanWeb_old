@@ -17,7 +17,7 @@ body {
 	resize: none;
 }
 
-.pu_img {
+.display_img {
 	margin: auto 30px;
 	/* text-align: center; */
 }
@@ -31,7 +31,7 @@ body {
 	height: 100px;
 	margin-left: auto;
 	margin-right: auto;
-	/* border: solid 2px #999 */
+	border: solid 2px black
 }
 
 .td-column-label {
