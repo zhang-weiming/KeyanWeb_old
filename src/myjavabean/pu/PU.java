@@ -82,7 +82,8 @@ public class PU {
 			String resultFilePath = RESULT_DIR_PATH + "/result.txt";
 //			String resultFilePath = RESULT_DIR_PATH + "/" + System.currentTimeMillis() / 1000 + ".txt";
 			// String command = exePath + " " + sourcePath + " " + modelPath + " " + resultFilePath;
-			String svm_classify_command = "wine " + EXE_PATH + " " + SOURCE_FILE_PATH + " " + MODEL_FILE_PATH + " " + resultFilePath;
+			String svm_classify_command = (String) (MyPath.SYSTEM_NAME.contains("Windows")?"":"wine ") + 
+					EXE_PATH + " " + SOURCE_FILE_PATH + " " + MODEL_FILE_PATH + " " + resultFilePath;
 			
 			File source_file = new File(SOURCE_FILE_PATH);
 			while(!source_file.exists()) {

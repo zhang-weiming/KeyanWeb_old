@@ -59,7 +59,8 @@ public class TransE {
 			HashMap<String, double[]> entityId2VecMap = new HashMap<String, double[]>();
 			entityId2VecMap.clear();
 
-			BufferedReader bufrEntity = new BufferedReader(new FileReader(entityVectorPath));
+			InputStreamReader isr = new InputStreamReader(new FileInputStream(entityVectorPath),"utf-8");
+			BufferedReader bufrEntity = new BufferedReader(isr);
 			String str = null;
 			while((str = bufrEntity.readLine()) != null) {
 				if(!str.equals("")) {
@@ -88,7 +89,8 @@ public class TransE {
 		try {
 			double[] relationVector = new double[VECTOR_N];
 
-			BufferedReader bufrRelation = new BufferedReader(new FileReader(relationVectorPath));
+			InputStreamReader isr = new InputStreamReader(new FileInputStream(relationVectorPath),"utf-8");
+			BufferedReader bufrRelation = new BufferedReader(isr);
 			String str = bufrRelation.readLine(); //只有一个关系量
 			String[] parts = str.split("\t");
 			for(int i = 0; i < relationVector.length; i++) {
@@ -269,7 +271,8 @@ public class TransE {
 		try {
 			HashMap<String, String> wordLibMap = new HashMap<String, String>();
 			wordLibMap.clear();
-			BufferedReader bufrWordLib = new BufferedReader(new FileReader(wordLibPath));
+			InputStreamReader isr = new InputStreamReader(new FileInputStream(wordLibPath),"utf-8");
+			BufferedReader bufrWordLib = new BufferedReader(isr);
 			String word = null;
 			int word_id = 1;
 			while((word = bufrWordLib.readLine()) != null && !word.equals("")) {

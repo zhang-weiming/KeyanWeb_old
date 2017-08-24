@@ -3,7 +3,9 @@ package myjavabean.pu;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -70,7 +72,8 @@ public class Word2PUVec {
 //			File source_file = new File(SOURCE_FILE_PATH);
 //			if(source_file.exists()) source_file.delete();
 			
-			BufferedWriter bufw = new BufferedWriter(new FileWriter(SOURCE_FILE_PATH));
+			OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(SOURCE_FILE_PATH), "utf-8");
+			BufferedWriter bufw = new BufferedWriter(osw);
 			for(int i = 0; i < sents.length; i++) {
 				String[] words = sents[i].split(" ");
 				ArrayList<Integer> tempList = new ArrayList<Integer>();

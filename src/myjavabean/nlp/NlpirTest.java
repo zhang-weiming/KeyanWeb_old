@@ -24,7 +24,8 @@ public class NlpirTest {
 	//com.sun.jna.Library
 	public interface CLibrary extends Library {
 		CLibrary Instance = (CLibrary) Native.loadLibrary(
-				NLPIR_ROOT_PATH + "/lib/linux64/libNLPIR.so", CLibrary.class);
+				NLPIR_ROOT_PATH + "/lib" + (String) (MyPath.SYSTEM_NAME.contains("Windows")?"/win64/NLPIR":"/linux64/libNLPIR.so"), 
+				CLibrary.class);
 		// CLibrary Instance = (CLibrary) Native.loadLibrary(
 				// rootPath + "/lib/NLPIR", CLibrary.class);
 		
