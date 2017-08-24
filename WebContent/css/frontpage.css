@@ -34,20 +34,10 @@ body {
 	/* border: solid 2px #999 */
 }
 
- /* .dl-display {
-	margin: 0;
-	padding: 0 auto;
-} */
-
 .td-column-label {
 	text-align: center;
 	background-color: #0f0;
 }
-
-.td-column-content {
-	
-} 
-
 
 ha {
 	color: #eee;

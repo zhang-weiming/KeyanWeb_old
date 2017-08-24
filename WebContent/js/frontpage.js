@@ -81,20 +81,25 @@ $(document).ready(function(){
 						var vertex_arr = new Array(2 * pairs.length);
 						var arc_arr = new Array(pairs.length);
 
+//						temp_vertex_str = "";
+//						temp_arc_str = "";
 						for(var i = 0; i < pairs.length; i++) {
 							var temp_pairs = pairs[i].split(" ");
 
 							vertex_arr[2 * i] = {category: 0, name: temp_pairs[0], value: 20};
 							vertex_arr[2 * i + 1] = {category: 1, name: temp_pairs[1], value: 20};
-
 							arc_arr[i] = {source: temp_pairs[0], target: temp_pairs[1] , weight: 2};
+							
+//							temp_vertex_str += "{category: 0, name: " + temp_pairs[0] + ", value: 20}, " + 
+//							"{category: 1, name: " + temp_pairs[0] + ", value: 20}, ";
+//							temp_arc_str += "{source: " + temp_pairs[0] + ", target: " + temp_pairs[1] + ", weight: 2}, ";
 						}
 
 						// 图-球球-TransE处理结果
 						$("div#main2").css("height", "400px");
 						showforce(document.getElementById('main2'), vertex_arr, arc_arr);
 						// 图-球球-TransE处理结果
-
+//						$("div.div-test").html(temp_vertex_str + "<br /><br />" + temp_arc_str);
 					}
 					
 				});
