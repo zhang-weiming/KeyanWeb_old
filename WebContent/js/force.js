@@ -31,6 +31,9 @@ function showforce(place,nodes,links){
                         }
                     },
                     legend : {
+                        textStyle : {
+                            fontSize : 14,
+                        },
                         x: 'left',
                         data : ['头实体','尾实体'],
                     },
@@ -40,10 +43,12 @@ function showforce(place,nodes,links){
                             name : "实体",
                             ribbonType : false,
                             categories : [{
-                                    name : '头实体'
+                                    name : '头实体',
+									//symbolSize : 30,
                                 },
                                 {
-                                    name : '尾实体'
+                                    name : '尾实体',
+									//symbolSize : 30,
                                 }
 							],
                             itemStyle: {
@@ -74,9 +79,10 @@ function showforce(place,nodes,links){
                                     linkStyle : {}
                                 }
                             },
-							symbolSize : 20,
+							size : '90%',
+							symbolSize : 18,
                             useWorker : false,
-                            minRadius : 20,
+                            minRadius : 10,
                             maxRadius : 25,
                             gravity : 1.1,
                             scaling : 1.1,

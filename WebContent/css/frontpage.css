@@ -17,28 +17,20 @@ body {
 	resize: none;
 }
 
-.display_img {
-	margin: auto 30px;
-	/* text-align: center; */
-}
-
 .title-left {
 	
 }
 
-.before_img {
+.before-img {
 	width: 100%;
 	height: 100px;
-	margin-left: auto;
-	margin-right: auto;
-	border: solid 2px black
+	text-align: center;
+	/* margin-left: auto;
+	margin-right: auto; */
+	/* border: solid 2px black */
 }
 
 .td-column-label {
 	text-align: center;
 	background-color: #0f0;
-}
-
-ha {
-	color: #eee;
 }

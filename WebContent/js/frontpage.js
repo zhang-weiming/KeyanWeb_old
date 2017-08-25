@@ -32,25 +32,32 @@ $(document).ready(function(){
 //				 // 图-仪表盘-准确率
 				
 				// 分类颜色标注
+				$("div.label-img").removeClass("before-img");
 				$("tr").remove(".tr-display");
 				positions = $.trim(pos_strs_positions).split(" ");
 				sInput_parts = sInput.split(/[。！？]/);
+				a = 1;
 				for(i = 0; i < sInput_parts.length; i++) {
-					temp_str = "<tr class=\"tr-display\">" + 
-								"<td class=\"td-column-label\">" + (i+1) + "</td>" + 
-								"<td class=\"td-column-content\">" + sInput_parts[i] + "</td>" + 
-							   "</tr>";
-					$(".table-display").append(temp_str);
+					if($.trim(sInput_parts[i]) != "") {
+						temp_str = "<tr class=\"tr-display\">" + 
+									"<td class=\"td-column-label\">" + (a) + "</td>" + 
+									"<td " + "id=\"td-column-content-" + i + "\" class=\"td-column-content\">" + sInput_parts[i] + "</td>" + 
+								"</tr>";
+						$(".table-display").append(temp_str);
+						a++;
+					}
 				}
 				// $("dt-column-label").width($("dt-column-label").height());
 				for(i = 0; i < positions.length; i++) {
-					$("td.td-column-content").eq(parseInt(positions[i])).css("background-color", "#5ff");
+					// $("td.td-column-content").eq(parseInt(positions[i])).css("background-color", "#5ff");
+					$("td#td-column-content-" + positions[i]).css("background-color", "#5ff");
 				}
 
 				// $("#display-classification").html(parseInt(positions[0]) + parseInt(positions[1]));
 				// 分类颜色标注
 				
 				// 图-圆环-正、负面句子个数统计
+				$("div.pu-img").removeClass("before-img");
 				$("div#main1").css("height", "400px");
 //				$("div#main1").css("height", "100%");
 				showpie(document.getElementById('main1'), [
@@ -60,13 +67,13 @@ $(document).ready(function(){
 				);
 				// 图-圆环-正、负面句子个数统计
 				
-//				// TempServlet 展示pos预测结果
-//				$.post("tempservlet", {
-//					tempData: pos_strs_positions + "|" + sInput
-//				}, function(result){
-//					alert(result);
-//				});
-//				// TempServlet 展示pos预测结果
+				// // TempServlet 展示pos预测结果
+				// $.post("tempservlet", {
+				// 	tempData: pos_strs_positions + "|" + sInput
+				// }, function(result){
+				// 	alert(result);
+				// });
+				// // TempServlet 展示pos预测结果
 				
 				
 				// 与 TransEServlet 交互
@@ -101,7 +108,9 @@ $(document).ready(function(){
 						arc_arr[0].weight = 5;
 
 						// 图-球球-TransE处理结果
-						$("div#main2").css("height", "100%");
+						$("div.transE-img").removeClass("before-img");
+						$("div#main2").css("height", "400px");
+//						$("div#main2").css("height", "100%");
 						showforce(document.getElementById('main2'), vertex_arr, arc_arr);
 						// 图-球球-TransE处理结果
 //						$("div.div-test").html(temp_vertex_str + "<br /><br />" + temp_arc_str);
