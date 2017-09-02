@@ -2,6 +2,8 @@ $(document).ready(function(){
 	// 自动填补textara
 	$("textarea.sents").val("宝马的油耗太高了。红色的很嗲，白色敞篷的也喜欢的~。奇瑞汽车下线了这是结果，而不是奇瑞委屈的到处说自己一腔热血工业报国无门。奥迪的吉普中看不中用~苦逼的赶路孩子只能窝在最后座的小小空间里~。新览胜的灯更是无力吐槽。分享图片三选一，我最喜欢这台红色的雪佛兰，外观大气，空间大，中控台超有fell，我不喜欢丰田卡罗拉，老爸你要相信我的眼光，雪佛兰科鲁慈保值率高啊。比亚迪回复玻璃本性，没有默德萨克是最大败笔。个人比较讨厌开别克的，因为经常发现别克大白天的开着车灯甚至远光，每次被晃发现又是个别克，心中一万只羊驼奔腾，最近在上海各种原因各种机会开了各种别克，才发现原来几乎都是特么自动开灯的，别克的设计师大概都是偏远山区出来的吧，默认不是自动会死啊。速腾内饰也不好看。。比亚迪核心业务前景遭质疑-华尔街日报姐早就说了，千万不要买他们家的车子.。byd的策略根本就是有问题，为了圈钱，不是为了造车……");
 	// 自动填补textara
+
+
 	$("button.am-btn.am-btn-default").click(function(){
 		var sInput = $("textarea.sents").val();
 //		sInput_parts = sInput.split(/[。！？]/);
@@ -32,6 +34,38 @@ $(document).ready(function(){
 //				 // 图-仪表盘-准确率
 				
 				// 分类颜色标注
+				pos_color='#F4A460';
+				neg_color='#7FFFD4';
+				/*
+				$("button#button-color-selector-pos").click(function(){
+					pos_color = $("input#input-color-selector-pos").val();
+					for(i = 0; i < positions.length; i++) {
+						// $("td.td-column-content").eq(parseInt(positions[i])).css("background-color", "#5ff");
+						$("td#td-column-content-" + positions[i]).css("background-color", pos_color);
+					}
+				});
+				$("button#button-color-selector-neg").click(function(){
+					neg_color = $("input#input-color-selector-neg").val();
+					$("tr").remove(".tr-display");
+					positions = $.trim(pos_strs_positions).split(" ");
+					sInput_parts = sInput.split(/[。！？]/);
+					a = 1;
+					for(i = 0; i < sInput_parts.length; i++) {
+						if($.trim(sInput_parts[i]) != "") {
+							temp_str = "<tr class=\"tr-display\">" + 
+										"<td class=\"td-column-label\">" + (a) + "</td>" + 
+										"<td " + "id=\"td-column-content-" + i + "\" class=\"td-column-content\">" + sInput_parts[i] + "</td>" + 
+									"</tr>";
+							$(".table-display").append(temp_str);
+							$("td#td-column-content-" + i).css("background-color", neg_color);
+							a++;
+						}
+					}
+					for(i = 0; i < positions.length; i++) {
+						$("td#td-column-content-" + positions[i]).css("background-color", pos_color);
+					}
+				});
+				*/
 				$("div.label-img").removeClass("before-img");
 				$("tr").remove(".tr-display");
 				positions = $.trim(pos_strs_positions).split(" ");
@@ -44,13 +78,17 @@ $(document).ready(function(){
 									"<td " + "id=\"td-column-content-" + i + "\" class=\"td-column-content\">" + sInput_parts[i] + "</td>" + 
 								"</tr>";
 						$(".table-display").append(temp_str);
+						$("td#td-column-content-" + i).css("background-color", "#BFEFFF");
 						a++;
 					}
 				}
+				// $("td.td-column-content").each(function(){
+
+				// });
 				// $("dt-column-label").width($("dt-column-label").height());
 				for(i = 0; i < positions.length; i++) {
 					// $("td.td-column-content").eq(parseInt(positions[i])).css("background-color", "#5ff");
-					$("td#td-column-content-" + positions[i]).css("background-color", "#5ff");
+					$("td#td-column-content-" + positions[i]).css("background-color", "#FFDEAD");
 				}
 
 				// $("#display-classification").html(parseInt(positions[0]) + parseInt(positions[1]));
@@ -129,3 +167,36 @@ $(document).ready(function(){
 		
 	});
 });
+
+
+function file_upload() {
+	var formData = new FormData();
+	var name = $("input#file-upload").val();
+	formData.append("file", $("#file-upload")[0].files[0]);
+	formData.append("name", name);
+	// alert(formData.get("name"));
+
+	$.ajax({
+		url : '/KeyanWeb/fileUpload/file1', 
+		type : 'POST', 
+		data : formData, 
+		cache: false,
+		// 告诉jQuery不要去处理发送的数据
+		processData : false, 
+		// 告诉jQuery不要去设置Content-Type请求头
+		contentType : false,
+		beforeSend:function(){
+			console.log("正在进行，请稍候");
+		},
+		success : function(responseStr) { 
+			if(responseStr.status === 0) {
+				console.log("成功"+responseStr);
+			} else {
+				console.log("失败");
+			}
+		}, 
+		error : function(responseStr) { 
+			console.log("error");
+		} 
+	});
+}

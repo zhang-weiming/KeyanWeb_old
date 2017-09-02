@@ -9,7 +9,7 @@ body {
 }
 
 .main_body {
-	margin: auto 2%;
+	margin: auto 5%;
 }
 
 #doc-ta-1 {
@@ -32,5 +32,5 @@ body {
 
 .td-column-label {
 	text-align: center;
-	background-color: #0f0;
+	/* background-color: #0f0; */
 }
