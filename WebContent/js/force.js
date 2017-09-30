@@ -13,6 +13,7 @@ function showforce(place,nodes,links){
         ],
         function (ec) {
             var myChart = ec.init(place);
+			window.onresize = myChart.resize; 
             var option = {
                     title : {
                         x:'right',
@@ -35,7 +36,7 @@ function showforce(place,nodes,links){
                             fontSize : 14,
                         },
                         x: 'left',
-                        data : ['头实体','尾实体'],
+                        data : ['对象','属性'],
                     },
                     series : [
                         {
@@ -43,11 +44,11 @@ function showforce(place,nodes,links){
                             name : "实体",
                             ribbonType : false,
                             categories : [{
-                                    name : '头实体',
+                                    name : '对象',
 									//symbolSize : 30,
                                 },
                                 {
-                                    name : '尾实体',
+                                    name : '属性',
 									//symbolSize : 30,
                                 }
 							],
@@ -79,7 +80,7 @@ function showforce(place,nodes,links){
                                     linkStyle : {}
                                 }
                             },
-							size : '90%',
+							size : '85%',
 							symbolSize : 18,
                             useWorker : false,
                             minRadius : 10,
@@ -92,7 +93,7 @@ function showforce(place,nodes,links){
                         }
                     ]
                 };
-            myChart.setOption(option);
+            myChart.setOption(option);		
             var ecConfig = require('echarts/config');
             function focus(param) {
                 var data = param.data;
