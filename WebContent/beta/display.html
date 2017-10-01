@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>科研训练展示</title>
+	<link rel="stylesheet" href="css/display.css" type="text/css" charset="utf-8" />
+	<link rel="stylesheet" href="css/zc.css" type="text/css" charset="utf-8" />
+</head>
+
+<body>
+<div class="top_bar" >
+
+</div>
+<header class="am-topbar">
+  <h1 class="am-topbar-brand">
+    <a href="#">科研训练首页</a>
+  </h1>
+
+   <!-- <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#doc-topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>  -->
+
+  <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
+    <ul class="am-nav am-nav-pills am-topbar-nav">
+      <li class="am-active"><a href="#">首页</a></li>
+      <!-- <li><a href="#">项目</a></li> -->
+
+  </div>
+</header>
+<div class="main_body">
+  <div class="am-form">
+    <fieldset>
+      <legend>科研训练</legend>
+
+      <div class="am-form-group">
+        <label for="doc-ta-1">文本域</label>
+        <textarea class="sents" rows="5" id="doc-ta-1"></textarea>
+      </div>
+
+      <p><button type="button" class="am-btn am-btn-default" >提交</button></p>
+    </fieldset>
+  </div>
+  <hr />
+  <!-- 负面: <input id="input-color-selector-pos" name="pos-color" type="text" /><button id="button-color-selector-pos">确定</button><br />
+  正面: <input id="input-color-selector-neg" name="neg-color" type="text" /><button id="button-color-selector-neg">确定</button>
+  <hr /> -->
+  <!-- <form id="uploadForm" enctype="multipart/form-data">
+    <input id="file-upload" name="file" type="file" name="file" multiple>
+    <button id="button-file-upload" type="button">确定</button>
+  </form> -->
+  
+  <!-- 分析结果展示部分 -->
+  <h6 class="title-left">分类标注</h6>
+  <div id="display-classification" class="label-img before-img">
+    <table class="table-display" border='1' cellspacing="0" cellpadding="0"></table>
+    <div></div>
+  </div>
+  <hr />
+  <h6 class="title-left">正负例分布</h6><div id="main1" class="pu-img before-img"></div>
+  <hr />
+  <h6 class="title-left">细粒度</h6><div id="main2" class="transE-img before-img"></div>
+  <!-- 分析结果展示部分 -->
+  <hr />
+</div>
+
+<!--<div  id="main1" class="am-img-responsive am-img-thumbnail" alt="140*140" width="140" height="140"/></div>-->
+
+<!-- <div class="test_div" style="display:block;"> -->
+<!-- test -->
+<!-- </div> -->
+
+<div class="display">
+
+</div>
+<div class="div-test">
+
+</div>
+
+	<script src="js/jQuery.js" charset="utf-8"></script>
+	<script src="js/echarts.js" charset="utf-8"></script>
+	<script src="js/display.js" charset="utf-8"></script>
+	<script src="js/pie.js" charset="utf-8"></script>
+	<script src="js/gauge.js" charset="utf-8"></script>
+	<script src="js/force.js" charset="utf-8"></script>
+</body>
+
+
+</html>

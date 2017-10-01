@@ -62,6 +62,7 @@ $(document).ready(function(){
 				// 分类颜色标注
 				pos_color='#F4A460';
 				neg_color='#7FFFD4';
+				$("#DC-legend").css("display", "block");
 				/*
 				$("button#button-color-selector-pos").click(function(){
 					pos_color = $("input#input-color-selector-pos").val();
