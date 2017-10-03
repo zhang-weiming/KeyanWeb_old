@@ -6,7 +6,7 @@ $(document).ready(function(){
 	$("button#button-file-upload").click(function(){
 		var formData = new FormData($("#uploadForm")[0]);
 		$.ajax({
-			url : '/KeyanWeb/fileuploadservlet',
+			url : 'http://182.254.247.94:8080/KeyanWeb/fileuploadservlet',
 			type : 'POST', 
 			data : formData,
 			async : false,
@@ -42,7 +42,7 @@ $(document).ready(function(){
 
 		
 		// 与 PUServlet 交互
-		$.post("puservlet", {
+		$.post("http://182.254.247.94:8080/KeyanWeb/puservlet", {
 			sents: sInput
 		}, function(result){
 //			alert("changed");
@@ -141,7 +141,7 @@ $(document).ready(function(){
 				
 				
 				// 与 TransEServlet 交互
-				$.post("transeservlet", {
+				$.post("http://localhost:8080/KeyanWeb/transeservlet", {
 					positions: pos_strs_positions,
 					sents: sInput
 				}, function(result){
@@ -192,5 +192,37 @@ $(document).ready(function(){
 		// 与 PUServlet 交互
 		
 	});
+
+
+	
+	// 发送登录请求
+    $("button#sign_in_button").click(function(){
+        url = "http://localhost:8080/KeyanWeb/signinservlet";
+        $.post(url, {
+            uemailaddress: $("input#sign_in_uemailaddress").val(),
+			upassword: $("input#sign_in_upassword").val()
+        }, function(result){
+			// alert('OK');
+			$("input#sign_in_result").val(result);
+        });
+    });
+	// 发送登录请求
+
+	// 发送注册请求
+    $("button#register-submit").click(function(){
+        url = "http://localhost:8080/KeyanWeb/signupservlet";
+        $.post(url, {
+			uname: $("input#uname").val(),
+            uemailaddress: $("input#uemailaddress").val(),
+			upassword: $("input#sign_up_upassword").val(),
+            uorganization: $("input#uorganization").val(),
+            ucontactway: $("input#ucontactway").val()
+        }, function(result){
+			$("input#sign_up_result").val(result);
+        });
+    });
+	// 发送注册请求
+
+
 
 });
