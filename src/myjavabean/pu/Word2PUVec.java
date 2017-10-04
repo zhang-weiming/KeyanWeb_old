@@ -1,5 +1,7 @@
+/**
+ * Word2PUVec.java
+ */
 package myjavabean.pu;
-
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FileInputStream;
@@ -11,35 +13,34 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
-
 import myjavabean.path.MyPath;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.ArrayList;
-
 public class Word2PUVec {
 //	public static final String WEB_INF_DIR_PATH = MyPath.WEB_INF_DIR_PATH;
 	private static final String WEB_INF_DIR_PATH = MyPath.WEB_INF_DIR_PATH;
 	private static final String FEATURE_SET_FILE_PATH = MyPath.FEATURE_SET_FILE_PATH;
-	private static final String SOURCE_FILE_PATH = WEB_INF_DIR_PATH + "/data/pu/model/temp.txt";
-	
-	public static double calLen(double[] vector) {
+	private static final String SOURCE_FILE_PATH = WEB_INF_DIR_PATH + "/data/pu/model/temp.txt"; // 文本向量保存路径。
+	public static double calLen(double[] vector) { // 计算向量的模
 		double sum = 0.0;
 		for(double para : vector) {
 			sum += para * para;
 		}
 		return Math.sqrt(sum);
 	}
-	
-	public static double[] norm(double[] vector) {
+	public static double[] norm(double[] vector) { // 向量单位化
 		double len = calLen(vector);
 		for(int i = 0; i < vector.length; i++) {
 			vector[i] /= len;
 		}
 		return vector;
 	}
-	
+	/**
+	 * 加载词库，放入ArrayList对象中，由于其排列有序，与链表中的索引值自动形成映射关系。
+	 * @param featureSetFilePath
+	 * @return
+	 */
 	public static ArrayList<String> loadFeatureList(String featureSetFilePath) {
 		try {
 			ArrayList<String> featureList = new ArrayList<String>();
@@ -52,29 +53,25 @@ public class Word2PUVec {
 			while((str = bufr.readLine()) != null) {
 				String[] parts = str.split(" ");
 				featureList.add(parts[0]);
-//				if(!word.equals("")) {
-//					String[] strs = word.split(" ");
-//					wordLib_map.put(strs[0], strs[1]);
-//				}
 			}
-			
 			return featureList;
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
+	/**
+	 * 主程序。提前设置好一个词库，将每个词语映射为唯一的id。通过该词库将文本向量化。
+	 * @param sents
+	 * @return
+	 */
 	public static String[] process(String[] sents) {
 		System.out.println("Word2PUVec start...");
 		try {
-			ArrayList<String> featureList = loadFeatureList(FEATURE_SET_FILE_PATH);
-//			File source_file = new File(SOURCE_FILE_PATH);
-//			if(source_file.exists()) source_file.delete();
-			
+			ArrayList<String> featureList = loadFeatureList(FEATURE_SET_FILE_PATH); // 加载词语和id的映射。
 			OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(SOURCE_FILE_PATH), "utf-8");
 			BufferedWriter bufw = new BufferedWriter(osw);
-			for(int i = 0; i < sents.length; i++) {
+			for(int i = 0; i < sents.length; i++) { // 遍历所有句子，分别做处理。
 				String[] words = sents[i].split(" ");
 				ArrayList<Integer> tempList = new ArrayList<Integer>();
 				tempList.clear();
@@ -85,7 +82,7 @@ public class Word2PUVec {
 				}
 				
 				// 排序
-				HashSet<Integer> tempSet = new HashSet<Integer>(tempList);
+				HashSet<Integer> tempSet = new HashSet<Integer>(tempList); // 应svm_classify.exe输入文件（词袋模型）的规则约束，需要将所有id值排序。
 				ArrayList<Integer> tempListFromSet = new ArrayList<Integer>(tempSet);
 				Collections.sort(tempListFromSet);
 				double[] vector = new double[featureList.size()];
@@ -94,41 +91,23 @@ public class Word2PUVec {
 					vector[word] = Collections.frequency(tempList, word);
 				}
 				// 排序
-				vector = norm(vector);
+				vector = norm(vector); // 向量单位化（归一化）
 				// 组合回一个句子，给 sent[i]
 				String temp = "";
 				for(int j = 0; j < tempListFromSet.size(); j++) {
 					temp = temp + (tempListFromSet.get(j) + 1) + ":" + vector[tempListFromSet.get(j)] + " ";
 				}
-				temp = temp.trim(); //remove the space characters ' '
-				
-//				sents[i] = "1 " + temp;
-				bufw.write("1 " + temp);
+				temp = temp.trim();
+				bufw.write("1 " + temp); // 保存对当前句子的文本表示结果。
 				bufw.flush();
 				bufw.newLine();
 				// 组合回一个句子，给 sent[i]
 			}
 			bufw.close();
-			System.out.println("create a source file (temp.txt)...");
-			
-//			// 把生成的向量写入临时文件中
-//			File source_file = new File(SOURCE_FILE_PATH);
-//			if(source_file.exists()) source_file.delete();
-//			BufferedWriter bufw = new BufferedWriter(new FileWriter(SOURCE_FILE_PATH));
-//			for(String sent : sents) {
-//				bufw.write(sent);
-//				bufw.flush();
-//				bufw.newLine();
-//			}
-//			bufw.close();
-//			System.out.println("create a source file (temp.txt)...");
-//			// 把生成的向量写入临时文件中
-			
+			System.out.println("文本向量化完成 create a source file (temp.txt)..."); // 服务器端输出提示文本向量化完成。
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		// System.out.println("end of Word2PUVec");
-		
 		return sents;
 	}
 }

@@ -1,3 +1,6 @@
+/**
+ * PU.java
+ */
 package myjavabean.pu;
 
 import java.io.File;
@@ -5,7 +8,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-
 import myjavabean.nlp.NlpirTest;
 import myjavabean.path.MyPath; 
 
@@ -15,13 +17,10 @@ public class PU {
 	private static final String MODEL_FILE_PATH = WEB_INF_DIR_PATH + "/data/pu/model/model";
 	private static final String RESULT_DIR_PATH = WEB_INF_DIR_PATH + "/data/pu/result";
 	private static final String SOURCE_FILE_PATH = WEB_INF_DIR_PATH + "/data/pu/model/temp.txt";
-	
-	// public static int[] count(String resultFilePath) {
 	public static String count(File resultFile) {
 		try {
 			if(resultFile.exists()) {
 				BufferedReader bufr = new BufferedReader(new FileReader(resultFile));
-				
 				int posCounter = 0, negCounter = 0;
 				String pos_positions = "";
 				String str = null;
@@ -58,33 +57,28 @@ public class PU {
 		return null;
 	}
 	
+	/**
+	 * 对输入文本做预处理，然后调用svm程序分类，并返回分类结果
+	 * @param sInput
+	 * @return
+	 */
 	public static String svm_classify(String sInput) {
 		System.out.println("PU start...");
-		NlpirTest nlpir = new NlpirTest();
+		NlpirTest nlpir = new NlpirTest(); // 初始化张华平分词工具类对象
 
-		String[] sents = sInput.trim().split("[。 ！ ？]"); //split the input paragraph into several sents
-//		String tempStr = "[PU]\n";
-//		for(String str : sents) {
-//			tempStr += str + "\n";
-//		}
-//		System.out.println(tempStr);
+		String[] sents = sInput.trim().split("[。 ！ ？]"); // 对输入文本按中文标点符号句号、感汉号、问号分句。
 		for(int i = 0; i < sents.length; i++) {
 			if(!sents[i].equals("")) {
-				sents[i] = nlpir.multProcess(sents[i]);
+				sents[i] = nlpir.multProcess(sents[i]); // 对每个句子用张华平分词工具进行分词、去掉词性标注、去停用词。
 			}
 		}
-		nlpir.exit();
-		System.out.println("NlpirTest finished...");
-
-		sents = Word2PUVec.process(sents);
-		
+		nlpir.exit(); // 销毁张华平分词工具类对象
+		System.out.println("NlpirTest finished..."); // 服务器端输出语句，提示完成分词、去掉词性标注、去停用词过程。
+		sents = Word2PUVec.process(sents); // 将文本表示成词袋模型向量。
 		try {
 			String resultFilePath = RESULT_DIR_PATH + "/result.txt";
-//			String resultFilePath = RESULT_DIR_PATH + "/" + System.currentTimeMillis() / 1000 + ".txt";
-			// String command = exePath + " " + sourcePath + " " + modelPath + " " + resultFilePath;
 			String svm_classify_command = (String) (MyPath.SYSTEM_NAME.contains("Windows")?"":"wine ") + 
-					EXE_PATH + " " + SOURCE_FILE_PATH + " " + MODEL_FILE_PATH + " " + resultFilePath;
-			
+					EXE_PATH + " " + SOURCE_FILE_PATH + " " + MODEL_FILE_PATH + " " + resultFilePath; // 针对运行操作系统的不同，自适应设置调用svm命令语句。
 			File source_file = new File(SOURCE_FILE_PATH);
 			while(!source_file.exists()) {
 				System.out.println("source file does not exist...");
@@ -95,8 +89,7 @@ public class PU {
 				resultFile.delete();
 			}
 			Runtime mexecutor = Runtime.getRuntime();
-			mexecutor.exec(svm_classify_command);
-
+			mexecutor.exec(svm_classify_command); // 调用svm_classify.exe程序对输入文本进行分类。
 			resultFile = new File(resultFilePath);
 			int countTime = 0;
 			while(!resultFile.exists() && countTime < 30) {
@@ -104,11 +97,11 @@ public class PU {
 				Thread.sleep(1000);
 			}
 			if(resultFile.exists()) {
-				String classifyResult = count(resultFile);
+				String classifyResult = count(resultFile); // 根据svm_classify.exe处理结果，整理返回信息。
 				return classifyResult;
 			}
 			else {
-				System.out.println("PU failed...");
+				System.out.println("PU svm failed..."); // svm_classify.exe运行结果不存在，服务器端输入提示分类失败。
 				return null;
 			}
 		} catch(Exception e) {

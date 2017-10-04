@@ -50,47 +50,50 @@ public class SignInServlet extends HttpServlet {
 		
 		System.out.println("[SignIn]: uemailaddress: " + uemailaddress);
 		
-		// 邮箱存在
-		if (dbHelper.containsUemailaddress(uemailaddress)) {
-			try {
-				String sql = "select uemailaddress,upassword from user "
-						+ "where uemailaddress=\'" + uemailaddress + "\';";
-				ResultSet rs = dbHelper.selectSql(sql);
-				if (rs.next()) {
-					// 密码匹配，允许登录
-					if ( upassword.equals(rs.getString("upassword")) ) {
-						System.out.println("[SignIn]: 登录成功");
-						out.println("success");
-						return;
+		if (uemailaddress != null) {
+			if (dbHelper.containsUemailaddress(uemailaddress)) { // 邮箱存在
+				try {
+					String sql = "select uemailaddress,upassword from user "
+							+ "where uemailaddress=\'" + uemailaddress + "\';";
+					ResultSet rs = dbHelper.selectSql(sql);
+					if (rs.next()) {
+						// 密码匹配，允许登录
+						if ( upassword.equals(rs.getString("upassword")) ) {
+							System.out.println("[SignIn]: 登录成功");
+							out.println("success");
+							return;
+						}
+						// 密码不匹配，不允许登录
+						else {
+							System.out.println("[SignIn]: 登录失败 -- 密码不匹配");
+							out.println("failed_password_false");
+							return;
+						}
 					}
-					// 密码不匹配，不允许登录
 					else {
-						System.out.println("[SignIn]: 登录失败 -- 密码不匹配");
-						out.println("failed_password");
+						// 该情况应该是数据库中没有该邮箱，但是从实际来看，该情况不会发生
+						System.out.println("[SignIn]: 登录失败 -- 未知错误");
+						out.println("failed_null");
 						return;
 					}
-				}
-				else {
-					// 该情况应该是数据库中没有该邮箱，但是从实际来看，该情况不会发生
+				} catch (Exception e) {
+					e.printStackTrace();
+					// 未知错误，无法判断，不允许登录
 					System.out.println("[SignIn]: 登录失败 -- 未知错误");
-					out.println("failed_null");
+					out.println("failed_unknown_error");
 					return;
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				// 未知错误，无法判断，不允许登录
-				System.out.println("[SignIn]: 登录失败 -- 未知错误");
-				out.println("failed_null2");
-				return;
+				
 			}
-			
-		}
-		// 该邮箱不存在，不允许登录
+			// 该邮箱不存在，不允许登录
+			else {
+				System.out.println("[SignIn]: 登录失败 -- 该邮箱地址不存在");
+				out.println("failed_emailaddress_not_found");
+			}
+		} // if
 		else {
-			System.out.println("[SignIn]: 登录失败 -- 该邮箱地址不存在");
-			out.println("failed_emailaddress");
+			out.println("failed_post_error");
 		}
-		
 		
 	}
 

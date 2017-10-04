@@ -1,8 +1,7 @@
+/**
+ * pie.js
+ */
 function showpie(place, data) {
-//   data:[
-//        {value:335, name:'直接访问'},
-//        {value:310, name:'邮件营销'}
-//   ]
     require.config({
         paths: {
             echarts: 'http://echarts.baidu.com/build/dist'

@@ -1,5 +1,8 @@
+/*
+ * NlpirTest.java
+ * 张华平分词工具类
+ */
 package myjavabean.nlp;
-
 import java.io.UnsupportedEncodingException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -7,28 +10,24 @@ import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
-
 import com.sun.jna.Library;
 import com.sun.jna.Native;
-
 import myjavabean.path.MyPath;
-
 public class NlpirTest {
 	private static final String NLPIR_ROOT_PATH = MyPath.NLPIR_ROOT_PATH;
 	private final String STOP_WORD_FILE_PATH = MyPath.STOP_WORD_FILE_PATH;
-	// public static final String system_charset = "GBK";
 	private final String system_charset = "UTF-8";
-	
 	private ArrayList<String> stopWordList;
-
-	//com.sun.jna.Library
+	/**
+	 * 设置通过jna.jar调用c语言库函数的接口。
+	 * com.sun.jna.Library
+	 * @author zwm
+	 *
+	 */
 	public interface CLibrary extends Library {
 		CLibrary Instance = (CLibrary) Native.loadLibrary(
 				NLPIR_ROOT_PATH + "/lib" + (String) (MyPath.SYSTEM_NAME.contains("Windows")?"/win64/NLPIR":"/linux64/libNLPIR.so"), 
 				CLibrary.class);
-		// CLibrary Instance = (CLibrary) Native.loadLibrary(
-				// rootPath + "/lib/NLPIR", CLibrary.class);
-		
 		public int NLPIR_Init(String sDataPath, int encoding, String sLicenceCode);
 		public String NLPIR_ParagraphProcess(String sSrc, int bPOSTagged);
 		public int NLPIR_AddUserWord(String sWord);
@@ -36,37 +35,39 @@ public class NlpirTest {
 		public String NLPIR_GetLastErrorMsg();
 		public void NLPIR_Exit();
 	}
-	
+	/**
+	 * 构造方法。初始化c语言库函数的调用接口实例句柄。
+	 */
 	public NlpirTest() {
 		String argu = NLPIR_ROOT_PATH;
 		int charset_type = 1;
-		
-		int init_flag = CLibrary.Instance.NLPIR_Init(argu, charset_type, "0");
+		int init_flag = CLibrary.Instance.NLPIR_Init(argu, charset_type, "0"); // 初始化c语言库函数的调用接口实例句柄。
 		String nativeBytes = null;
-
 		if (0 == init_flag) {
 			nativeBytes = CLibrary.Instance.NLPIR_GetLastErrorMsg();
 			System.err.println("初始化失败！fail reason is " + nativeBytes);
 			return;
 		}
-
 		try {
-			// 读取停用词
-			BufferedReader bufr = new BufferedReader(new FileReader(STOP_WORD_FILE_PATH));
+			BufferedReader bufr = new BufferedReader(new FileReader(STOP_WORD_FILE_PATH)); // 读取停用词
 			this.stopWordList = new ArrayList<String>();
 			this.stopWordList.clear();
 			String str = null;
 			while((str = bufr.readLine()) != null) {
 				this.stopWordList.add(str);
 			}
-			// 读取停用词
 		} catch (Exception e) {
 			System.out.println("[Error]加载停用词出错!");
 			e.printStackTrace();
 		}
-//		System.out.println("NlpirTest对象创建");
 	}
-	
+	/**
+	 * 转换字符串编码形式。
+	 * @param aidString
+	 * @param ori_encoding
+	 * @param new_encoding
+	 * @return
+	 */
 	public String transString(String aidString, String ori_encoding, String new_encoding) {
 		try {
 			return new String(aidString.getBytes(ori_encoding), new_encoding);
@@ -75,7 +76,11 @@ public class NlpirTest {
 		}
 		return null;
 	}
-	
+	/**
+	 * 添加用户词典。
+	 * @param word
+	 * @param ci_xing
+	 */
 	public void addUserWord(String word, String ci_xing) {
 		try {
 			CLibrary.Instance.NLPIR_AddUserWord(word + " " + ci_xing);
@@ -84,7 +89,10 @@ public class NlpirTest {
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * 删除用户词典。
+	 * @param word
+	 */
 	public void delUserWord(String word) {
 		try {
 			CLibrary.Instance.NLPIR_DelUsrWord(word);
@@ -93,7 +101,11 @@ public class NlpirTest {
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * 对文本进行分词、去词性标注、去词性标注。
+	 * @param sInput
+	 * @return
+	 */
 	public String multProcess(String sInput) {
 		try {
 			// 分词
@@ -119,17 +131,19 @@ public class NlpirTest {
 			}
 			return sResult.trim();
 		} catch (Exception e) {
-			// statue = 0;
 			System.out.println("Error: failed to process this sentence ... " + sInput);
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
+	/**
+	 * 分词。
+	 * @param sInput
+	 * @return
+	 */
 	public String segment(String sInput) {
 		try {
 			String nativeBytes = CLibrary.Instance.NLPIR_ParagraphProcess(sInput, 1);
-			
 			return nativeBytes;
 		} catch (Exception e) {
 			System.out.println("Error: cannot segment ... " + sInput);
@@ -137,7 +151,11 @@ public class NlpirTest {
 			return null;
 		}
 	}
-	
+	/**
+	 * 去掉词性标注。
+	 * @param sInput
+	 * @return
+	 */
 	public String modify(String sInput) {
 		String[] sInputArr = sInput.split(" ");
 		String sResult = "";
@@ -150,17 +168,17 @@ public class NlpirTest {
 		sResult = sResult.trim();
 		return sResult;
 	}
-	
+	/**
+	 * 去停用词。
+	 * @param sInput
+	 * @return
+	 */
 	public String removeTYC(String sInput) {
 		String[] sResultArr = sInput.split(" ");
-
-		// 去停用词
 		for(int i = 0; i < sResultArr.length; i++) {
 			if(this.stopWordList.contains(sResultArr[i]))
 				sResultArr[i] = null;
 		}
-		// 去停用词
-
 		String sResult = "";
 		for(int i = 0; i < sResultArr.length; i++) {
 			if(sResultArr[i] != null) {
@@ -169,7 +187,9 @@ public class NlpirTest {
 		}
 		return sResult.trim();
 	}
-	
+	/**
+	 * 销毁c语言库函数调用句柄。
+	 */
 	public void exit() {
 		CLibrary.Instance.NLPIR_Exit();
 	}

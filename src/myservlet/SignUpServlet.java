@@ -63,17 +63,21 @@ public class SignUpServlet extends HttpServlet {
 		user.setUcontactway( ucontactway );
 
 		
-		// 该邮箱已存在，注册失败
-		if (dbHelper.containsUemailaddress(uemailaddress)) {
-			System.out.println("该邮箱已存在，注册失败");
-			out.println("failed");
-			return;
+		if (uemailaddress != null) {
+			if (dbHelper.containsUemailaddress(uemailaddress)) { // 该邮箱已存在，注册失败
+				System.out.println("该邮箱已存在，注册失败");
+				out.println("failed_emailaddress_have_signed_up");
+				return;
+			}
+			// 该邮箱可注册
+			else {
+				dbHelper.insert(user);
+				out.print("success");
+				return;
+			}
 		}
-		// 该邮箱可注册
 		else {
-			dbHelper.insert(user);
-			out.print("success");
-			return;
+			out.println("failed_post_error");
 		}
 		
 		
