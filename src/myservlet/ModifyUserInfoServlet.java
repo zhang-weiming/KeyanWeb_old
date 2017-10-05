@@ -57,20 +57,24 @@ public class ModifyUserInfoServlet extends HttpServlet {
 		if (postreason == null || postreason.equals("")) {
 			System.out.println("没有请求原因信息，不予响应。");
 			out.println("failed_postreason_null");
+			return;
 		}
 		else {
-			user.setUemailaddress( request.getParameter("uemailaddress") );
-			if (user.getUemailaddress() == null || user.getUemailaddress().equals("")) { // 获取邮箱参数失败（出错）
+			uemailaddress = request.getParameter("uemailaddress");
+			if (uemailaddress == null || uemailaddress.equals("")) { // 获取邮箱参数失败（出错）
 				System.out.println("获取邮箱参数失败（出错）。邮箱：" + user.getUemailaddress());
 				out.println("failed_emailaddress_null");
 				return;
 			}
 			else { // 拿到邮箱，尝试获取信息
+				user.setUemailaddress( uemailaddress );
+				
 				if ( dbHelper.containsUemailaddress(user.getUemailaddress()) ) { // 该邮箱可用
 					try {
 						String sql =  "select * from user;";
 						ResultSet resultSet = dbHelper.selectSql(sql);
 						if (resultSet.next()) {
+							System.out.println("11111");
 							user.setUname( resultSet.getString(1) );
 							user.setUorganization( resultSet.getString(4) );
 							user.setUcontactway( resultSet.getString(5) );
@@ -80,6 +84,7 @@ public class ModifyUserInfoServlet extends HttpServlet {
 							String returnString = user.getUname() + "|" // uname
 									+ user.getUorganization() + "|" // uorganization
 									+ user.getUcontactway(); // ucontactway
+							System.out.println("请求成功（获取）。");
 							out.println("success|" + returnString);
 							return;
 						}
@@ -88,13 +93,13 @@ public class ModifyUserInfoServlet extends HttpServlet {
 							uorganization = request.getParameter("uorganization");
 							ucontactway = request.getParameter("ucontactway");
 							
-							if (uname != null || !uname.equals("")) {
+							if (uname != null && !uname.equals("")) {
 								user.setUname(uname);
 							}
-							if (uorganization != null || !uorganization.equals("")) {
+							if (uorganization != null && !uorganization.equals("")) {
 								user.setUorganization(uorganization);
 							}
-							if (ucontactway != null || !ucontactway.equals("")) {
+							if (ucontactway != null && !ucontactway.equals("")) {
 								user.setUcontactway(ucontactway);
 							}
 							

@@ -72,6 +72,7 @@ public class SignUpServlet extends HttpServlet {
 			// 该邮箱可注册
 			else {
 				dbHelper.insert(user);
+				System.out.println("注册成功。邮箱：" + uemailaddress);
 				out.print("success");
 				return;
 			}
