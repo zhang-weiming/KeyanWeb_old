@@ -81,6 +81,33 @@ public class DBHelper {
 		}
 		return 0;
 	}
+	
+	public int update(User user) {
+		try {
+			String sql = "update user set uname=\'" + user.getUname() + "\',"
+										+ "uemailaddress=\'" + user.getUemailaddress() + "\',"
+										+ "uorganization=\'" + user.getUorganization() + "\',"
+										+ "ucontactway=\'" + user.getUcontactway() + "\' "
+										+ "where uemailaddress=\'" + user.getUemailaddress() + "\';";
+			pstatement = conn.prepareStatement(sql);
+			int i = pstatement.executeUpdate();
+			return i;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public int updateSql(String sql) {
+		try {
+			pstatement = conn.prepareStatement(sql);
+			int i = pstatement.executeUpdate();
+			return i;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
 
 	public boolean containsUemailaddress(String uemailaddress) {
 		try {
