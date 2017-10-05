@@ -5,17 +5,17 @@ import java.util.Date;
 
 public class FeedBack {
 	private String uemailaddress;
-	private String feedback;
+	private String feedinfo;
 	private String inputtext;
-    private String udatetime;
+    private String fbdatetime;
     private Date date;
     
     public FeedBack() {
     	date = new Date();
     	uemailaddress = "";
-    	feedback = "";
+    	feedinfo = "";
     	inputtext = "";
-    	udatetime = new SimpleDateFormat().format(date);
+    	fbdatetime = new SimpleDateFormat().format(date);
     }
 
 	public String getUemailaddress() {
@@ -26,12 +26,12 @@ public class FeedBack {
 		this.uemailaddress = uemailaddress;
 	}
 
-	public String getFeedback() {
-		return feedback;
+	public String getFeedInfo() {
+		return feedinfo;
 	}
 
-	public void setFeedback(String feedback) {
-		this.feedback = feedback;
+	public void setFeedInfo(String feedinfo) {
+		this.feedinfo = feedinfo;
 	}
 
 	public String getInputtext() {
@@ -42,12 +42,12 @@ public class FeedBack {
 		this.inputtext = inputtext;
 	}
 
-	public String getUdatetime() {
-		return udatetime;
+	public String getFbdatetime() {
+		return fbdatetime;
 	}
 
-	public void setUdatetime(String udatetime) {
-		this.udatetime = udatetime;
+	public void setFbdatetime(String fbdatetime) {
+		this.fbdatetime = fbdatetime;
 	}
 	
 }

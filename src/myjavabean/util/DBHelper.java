@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 
+import myjavabean.model.FeedBack;
 import myjavabean.model.User;
 
 
@@ -54,6 +55,23 @@ public class DBHelper {
 						+ user.getUorganization() + "\', \'"
 						+ user.getUcontactway() + "\', \'"
 						+ user.getUdatetime() + "\');";
+			
+			pstatement = conn.prepareStatement(sql);
+			int i = pstatement.executeUpdate();
+			return i;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	public int insert(FeedBack feedback) {
+		try {
+			String sql = "insert into feedback values(null, \'"
+						+ feedback.getUemailaddress() + "\', \'"
+						+ feedback.getFeedInfo() + "\', \'"
+						+ feedback.getInputtext() + "\', \'"
+						+ feedback.getFbdatetime() + "\');";
 			
 			pstatement = conn.prepareStatement(sql);
 			int i = pstatement.executeUpdate();
