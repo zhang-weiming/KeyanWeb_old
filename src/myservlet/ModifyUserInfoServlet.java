@@ -71,24 +71,25 @@ public class ModifyUserInfoServlet extends HttpServlet {
 				
 				if ( dbHelper.containsUemailaddress(user.getUemailaddress()) ) { // 该邮箱可用
 					try {
-						String sql =  "select * from user;";
-						ResultSet resultSet = dbHelper.selectSql(sql);
-						if (resultSet.next()) {
-							System.out.println("11111");
-							user.setUname( resultSet.getString(1) );
-							user.setUorganization( resultSet.getString(4) );
-							user.setUcontactway( resultSet.getString(5) );
-							user.setUdatetime( resultSet.getString(6) );
-						}
-						if (postreason.contains("get")) {
+						if (postreason.equals("get")) { // 获取个人信息
+							String sql =  "select * from user;";
+							ResultSet resultSet = dbHelper.selectSql(sql);
+							if (resultSet.next()) {
+								user.setUname( resultSet.getString(1) );
+								user.setUpassword(resultSet.getString(3));
+								user.setUorganization( resultSet.getString(4) );
+								user.setUcontactway( resultSet.getString(5) );
+								user.setUdatetime( resultSet.getString(6) );
+							}
+							
 							String returnString = user.getUname() + "|" // uname
 									+ user.getUorganization() + "|" // uorganization
 									+ user.getUcontactway(); // ucontactway
-							System.out.println("请求成功（获取）。");
+							System.out.println("请求成功（获取信息）。");
 							out.println("success|" + returnString);
 							return;
 						}
-						if (postreason.contains("modify")) {
+						if (postreason.equals("modify")) { // 修改个人信息
 							uname = request.getParameter("uname");
 							uorganization = request.getParameter("uorganization");
 							ucontactway = request.getParameter("ucontactway");
@@ -112,6 +113,17 @@ public class ModifyUserInfoServlet extends HttpServlet {
 								out.println("success");
 							}
 							return;
+						}
+						if (postreason.equals("upassword")) { // 修改密码
+							upassword = request.getParameter("upassword");
+							if ( 0 == dbHelper.updateUpassword(user) ) { // 出错
+								System.out.println("修改密码出错！");
+								out.println("failed_modify_error");
+							}
+							else { // 成功
+								System.out.println("修改密码成功！");
+								out.println("success");
+							}
 						}
 
 					} catch (Exception e) {

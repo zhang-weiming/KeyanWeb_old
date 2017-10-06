@@ -14,7 +14,7 @@ public class DBHelper {
 	public static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	public static final String DB_URL = "jdbc:mysql://127.0.0.1/test_db";
 	public static final String USER = "root";
-	public static final String PASSWORD = "12345";
+	public static final String PASSWORD = "keyan123";
 	
 	public Connection conn = null;
 	public PreparedStatement pstatement = null;
@@ -73,6 +73,8 @@ public class DBHelper {
 						+ feedback.getInputtext() + "\', \'"
 						+ feedback.getFbdatetime() + "\');";
 			
+//			sql = new String(new String(sql.getBytes(), "UTF-8").getBytes("GBK"));
+			
 			pstatement = conn.prepareStatement(sql);
 			int i = pstatement.executeUpdate();
 			return i;
@@ -85,9 +87,21 @@ public class DBHelper {
 	public int update(User user) {
 		try {
 			String sql = "update user set uname=\'" + user.getUname() + "\',"
-										+ "uemailaddress=\'" + user.getUemailaddress() + "\',"
 										+ "uorganization=\'" + user.getUorganization() + "\',"
 										+ "ucontactway=\'" + user.getUcontactway() + "\' "
+										+ "where uemailaddress=\'" + user.getUemailaddress() + "\';";
+			pstatement = conn.prepareStatement(sql);
+			int i = pstatement.executeUpdate();
+			return i;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public int updateUpassword(User user) {
+		try {
+			String sql = "update user set upassword=\'" + user.getUpassword() + "\' "
 										+ "where uemailaddress=\'" + user.getUemailaddress() + "\';";
 			pstatement = conn.prepareStatement(sql);
 			int i = pstatement.executeUpdate();
