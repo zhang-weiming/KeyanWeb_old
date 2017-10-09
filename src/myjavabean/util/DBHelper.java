@@ -14,7 +14,7 @@ public class DBHelper {
 	public static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	public static final String DB_URL = "jdbc:mysql://127.0.0.1/test_db";
 	public static final String USER = "root";
-	public static final String PASSWORD = "keyan123";
+	public static final String PASSWORD = "12345";
 	
 	public Connection conn = null;
 	public PreparedStatement pstatement = null;
@@ -26,6 +26,21 @@ public class DBHelper {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public String getAppLatestVersion() {
+		try {
+			String sql = "select * from app_version where name=\'latest\';";
+
+			pstatement = conn.prepareStatement(sql);
+			ResultSet rs = pstatement.executeQuery();
+			if (rs.next()) {
+				return rs.getString(2);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 	
 	public int insert(User user) {

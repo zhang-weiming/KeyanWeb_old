@@ -25,7 +25,7 @@ public class FeedBackServlet extends HttpServlet {
 	private String uemailaddress;
 	private String feedinfo;
 	private String inputtext;
-	private String fbdatetime;
+//	private String fbdatetime;
 	
 	private DBHelper dbHelper;
        
@@ -39,7 +39,7 @@ public class FeedBackServlet extends HttpServlet {
         uemailaddress = "";
         feedinfo = "";
         inputtext = "";
-        fbdatetime = "";
+//        fbdatetime = "";
         
 		dbHelper = new DBHelper();
     }
@@ -57,7 +57,7 @@ public class FeedBackServlet extends HttpServlet {
 		feedinfo = request.getParameter("feedinfo");
 		inputtext = request.getParameter("inputtext");
 		if (inputtext == null) inputtext = "";
-		fbdatetime = new SimpleDateFormat().format(new Date());
+//		fbdatetime = new SimpleDateFormat().format(new Date());
 		
 		if (uemailaddress.equals("") || uemailaddress == null) { // 邮箱为空，则不允许提交反馈
 			out.println("failed_emailaddress_is_null");
@@ -73,7 +73,7 @@ public class FeedBackServlet extends HttpServlet {
 					feedback.setUemailaddress(uemailaddress);
 					feedback.setFeedInfo(feedinfo);
 					feedback.setInputtext(inputtext);
-					feedback.setFbdatetime(fbdatetime);
+//					feedback.setFbdatetime(fbdatetime);
 					if ( 0 == dbHelper.insert(feedback) ) { // 插入出错
 						System.out.println("\t提交失败：mysql插入出错");
 						out.println("failed_mysql_error");

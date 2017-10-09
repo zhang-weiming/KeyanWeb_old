@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class FeedBack {
+    public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    
 	private String uemailaddress;
 	private String feedinfo;
 	private String inputtext;
@@ -15,7 +17,7 @@ public class FeedBack {
     	uemailaddress = "";
     	feedinfo = "";
     	inputtext = "";
-    	fbdatetime = new SimpleDateFormat().format(date);
+    	fbdatetime = new SimpleDateFormat(DATETIME_FORMAT).format(date);
     }
 
 	public String getUemailaddress() {

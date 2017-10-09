@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import myjavabean.util.DBHelper;
 
@@ -22,6 +23,7 @@ public class SignInServlet extends HttpServlet {
 	private String uemailaddress;
 	private String upassword;
 	
+	private String postreason;
 	private DBHelper dbHelper;
        
     /**
@@ -45,6 +47,7 @@ public class SignInServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		System.out.println("登录请求接收");
 		
+		postreason = request.getParameter("postreason");
 		uemailaddress = request.getParameter("uemailaddress");
 		upassword = request.getParameter("upassword");
 		
@@ -60,6 +63,20 @@ public class SignInServlet extends HttpServlet {
 						// 密码匹配，允许登录
 						if ( upassword.equals(rs.getString("upassword")) ) {
 							System.out.println("[SignIn]: 登录成功");
+//							if (postreason != null) { // 网站系统--为用户建立session标识
+							HttpSession session = request.getSession(true);
+							session.setAttribute("uemailaddress", uemailaddress);
+							System.out.println("为用户" + uemailaddress + "建立session，id：" + session.getId());
+//								if (session != null) {
+//									System.out.println("为用户" + uemailaddress + "建立session，id：" + session.getId());
+//									out.println("success|" + session.getId());
+//								}
+//								else {
+//									System.out.println("创建session失败！");
+////									out.println("failed_session_cannot_built");
+//								}
+//							}
+							
 							out.println("success");
 							return;
 						}

@@ -41,14 +41,11 @@ public class SignUpServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		response.getWriter().append("Served at: ").append(request.getContextPath());
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		
 		System.out.println("接收到请求");
-		
-//		String uemailaddress = request.getParameter("uemailaddress");
 		
 		uname = request.getParameter("uname");
 		uemailaddress = request.getParameter("uemailaddress");
@@ -56,13 +53,13 @@ public class SignUpServlet extends HttpServlet {
 		uorganization = request.getParameter("uorganization");
 		ucontactway = request.getParameter("ucontactway");
 		
-		if (!uname.equals("")) user.setUname(uname);
+//		if (!uname.equals("")) user.setUname(uname);
+		user.setUname(uname);
 		user.setUemailaddress( uemailaddress );
 		user.setUpassword( upassword );
 		user.setUorganization( uorganization );
 		user.setUcontactway( ucontactway );
 
-		
 		if (uemailaddress != null) {
 			if (dbHelper.containsUemailaddress(uemailaddress)) { // 该邮箱已存在，注册失败
 				System.out.println("该邮箱已存在，注册失败");

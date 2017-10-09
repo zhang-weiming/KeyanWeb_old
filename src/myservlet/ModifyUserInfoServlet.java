@@ -67,19 +67,19 @@ public class ModifyUserInfoServlet extends HttpServlet {
 				return;
 			}
 			else { // 拿到邮箱，尝试获取信息
-				user.setUemailaddress( uemailaddress );
+				user.setUemailaddress( new String(uemailaddress.getBytes(), "UTF-8") );
 				
 				if ( dbHelper.containsUemailaddress(user.getUemailaddress()) ) { // 该邮箱可用
 					try {
 						if (postreason.equals("get")) { // 获取个人信息
-							String sql =  "select * from user;";
+							String sql =  "select * from user where uemailaddress=\'" + user.getUemailaddress() + "\';";
 							ResultSet resultSet = dbHelper.selectSql(sql);
 							if (resultSet.next()) {
-								user.setUname( resultSet.getString(1) );
-								user.setUpassword(resultSet.getString(3));
-								user.setUorganization( resultSet.getString(4) );
-								user.setUcontactway( resultSet.getString(5) );
-								user.setUdatetime( resultSet.getString(6) );
+								user.setUname( new String(resultSet.getString(1).getBytes(), "UTF-8") );
+								user.setUpassword( new String(resultSet.getString(3).getBytes(), "UTF-8") );
+								user.setUorganization( new String(resultSet.getString(4).getBytes(), "UTF-8") );
+								user.setUcontactway( new String(resultSet.getString(5).getBytes(), "UTF-8") );
+								user.setUdatetime( new String(resultSet.getString(6).getBytes(), "UTF-8") );
 							}
 							
 							String returnString = user.getUname() + "|" // uname
@@ -95,13 +95,13 @@ public class ModifyUserInfoServlet extends HttpServlet {
 							ucontactway = request.getParameter("ucontactway");
 							
 							if (uname != null && !uname.equals("")) {
-								user.setUname(uname);
+								user.setUname( new String(uname.getBytes(), "UTF-8") );
 							}
 							if (uorganization != null && !uorganization.equals("")) {
-								user.setUorganization(uorganization);
+								user.setUorganization( new String(uorganization.getBytes(), "UTF-8") );
 							}
 							if (ucontactway != null && !ucontactway.equals("")) {
-								user.setUcontactway(ucontactway);
+								user.setUcontactway( new String(ucontactway.getBytes(), "UTF-8") );
 							}
 							
 							if ( 0 == dbHelper.update(user) ) { // 出错
@@ -115,7 +115,7 @@ public class ModifyUserInfoServlet extends HttpServlet {
 							return;
 						}
 						if (postreason.equals("upassword")) { // 修改密码
-							upassword = request.getParameter("upassword");
+							user.setUpassword(request.getParameter("upassword"));
 							if ( 0 == dbHelper.updateUpassword(user) ) { // 出错
 								System.out.println("修改密码出错！");
 								out.println("failed_modify_error");
