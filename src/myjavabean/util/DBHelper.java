@@ -12,9 +12,9 @@ import myjavabean.model.User;
 
 public class DBHelper {
 	public static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	public static final String DB_URL = "jdbc:mysql://127.0.0.1/test_db";
+	public static final String DB_URL = "jdbc:mysql://localhost/test_db";
 	public static final String USER = "root";
-	public static final String PASSWORD = "keyan123";
+	public static final String PASSWORD = "12345";
 	
 	public Connection conn = null;
 	public PreparedStatement pstatement = null;
