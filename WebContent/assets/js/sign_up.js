@@ -14,16 +14,73 @@ $(document).ready(function(){
             uname = "User" + new String(new Date().getTime());
         }
         // alert(uname);
+        
+        ready = true;
+        re_email = new RegExp(/^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/); 
+        if (uemailaddress == "") {
+            $("div.error_info_uemailaddress").html("请输入邮箱！");
+            ready = false;
+        }
+        else {
+            if (re_email.test(uemailaddress)) {
+                $("div.error_info_uemailaddress").html("");
+            }
+            else {
+                $("div.error_info_uemailaddress").html("邮箱格式不正确！");
+                ready = false;
+            }
+        }
+        if (upassword == "") {
+            $("div.error_info_upassword").html("请输入密码！");
+            ready = false;
+        }
+        else {
+            $("div.error_info_upassword").html("");
+        }
+        if (upassword_confirmed == "") {
+            $("div.error_info_upassword_confirmed").html("请再次输入密码！");
+            ready = false;
+        }
+        else if (upassword_confirmed == upassword) {
+            $("div.error_info_upassword_confirmed").html("密码不一致！请重新填写。");
+            ready = false;
+        }
+        else {
+            $("div.error_info_upassword_confirmed").html("");
+        }
+        if (uorganization == "") {
+            $("div.error_info_uorganization").html("请输入您所在单位/学校！");
+            ready = false;
+        }
+        else {
+            $("div.error_info_uorganization").html("");
+        }
+        if (ucontactway == "") {
+            $("div.error_info_ucontactway").html("请输入您的联系方式！");
+            ready = false;
+        }
+        else {
+            $("div.error_info_ucontactway").html("");
+        }
 
-        $.post("signupservlet", {
-            uname: uname,
-            uemailaddress: uemailaddress,
-            upassword: upassword,
-            uorganization: uorganization,
-            ucontactway: ucontactway
-        }, function(result){
-            alert(result);
-        });
+        if (ready) {
+            $.post("signupservlet", {
+                uname: uname,
+                uemailaddress: uemailaddress,
+                upassword: upassword,
+                uorganization: uorganization,
+                ucontactway: ucontactway
+            }, function(result){
+                if (result.indexOf("success") >= 0) {
+                    window.location.href = "./display.html";
+                }
+                else {
+                    if (result.indexOf("have_signed_up") >= 0) {
+                        $("div.error_info_uemailaddress").html("该邮箱已注册！");
+                    }
+                }
+            });
+        }
     });
 });
 

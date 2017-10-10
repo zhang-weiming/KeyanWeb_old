@@ -23,18 +23,10 @@
   </div> -->
 
   <div id="user_state" class="am-topbar-right">
-    <span id="show_uemailaddress" class="am-topbar-brand">请您登录！</span>
-    <button id="signin" class="am-btn am-btn-default am-topbar-btn am-btn-sm">登录</button>
-    <button id="signup" class="am-btn am-btn-default am-topbar-btn am-btn-sm">注册</button>
+    <div class="show_uemailaddress am-topbar-brand"><span id="sign_in_or_up">请您 <a id="signin" href="./signin.html">登录</a> | <a id="signup" href="./signup.html">注册</a></span><span id="sign_out">[<a>退出登录</a>]</span></div>
+    <!-- <button id="signin" class="am-btn am-btn-default am-topbar-btn am-btn-sm">登录</button>
+    <button id="signup" class="am-btn am-btn-default am-topbar-btn am-btn-sm">注册</button> -->
   </div>
-   <!-- <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#doc-topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>  -->
-
-  <!-- <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
-    <ul class="am-nav am-nav-pills am-topbar-nav">
-      <li class="am-active"><a href="#">首页</a></li>
-      <!-- <li><a href="#">项目</a></li> -->
-
-  <!-- </div> -->
 
 </header>
 <div class="main_body">
@@ -48,6 +40,7 @@
       </div>
 
       <button type="button" id="input_text_commit" class="am-btn am-btn-default" >提交</button>
+      <p class="error_info"></p>
     </fieldset>
   </div>
   <hr />
@@ -76,6 +69,7 @@
 <div class="div-test"> </div>
 
 <script src="assets/js/jQuery.js" charset="utf-8"></script>
+<!-- <script src="assets/js/jquery.cookie.js" charset="utf-8"></script> -->
 <script src="assets/js/echarts.js" charset="utf-8"></script>
 <script src="assets/js/display.js" charset="utf-8"></script>
 <script src="assets/js/pie.js" charset="utf-8"></script>

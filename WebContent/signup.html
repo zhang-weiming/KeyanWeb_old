@@ -22,17 +22,20 @@
     .header p {
       font-size: 14px;
     }
-
     .my-form-row {
       margin-top: 5px;
       margin-bottom: 5px;
+    }
+    .error_info {
+      font-size: 14px;
+      color: #f00;
     }
   </style>
 </head>
 <body>
 <div class="header">
   <div class="am-g">
-    <h1>注册界面</h1>
+    <h1>欢迎新用户</h1>
   </div>
   <hr />
 </div>
@@ -42,12 +45,18 @@
     <div class="am-form">
       <!-- <label for="email">邮箱:</label> -->
       <input type="text" class="my-form-row" id="uname" placeholder="昵称">
+      <div class="error_info_uname error_info"></div>
       <input type="email" class="my-form-row" id="uemailaddress" placeholder="邮箱">
+      <div class="error_info_uemailaddress error_info"></div>
       <!-- <label for="password">密码:</label> -->
       <input type="password" class="my-form-row" id="upassword" placeholder="密码">
+      <div class="error_info_upassword error_info"></div>
       <input type="password" class="my-form-row" id="upassword_confirmed" placeholder="确认密码">
+      <div class="error_info_upassword_confirmed error_info"></div>
       <input type="text" class="my-form-row" id="uorganization" placeholder="单位/学校">
+      <div class="error_info_uorganization error_info"></div>
       <input type="text" class="my-form-row" id="ucontactway" placeholder="联系方式">
+      <div class="error_info_ucontactway error_info"></div>
       <!-- <label for="remember-me">
         <input id="remember-me" type="checkbox">
         记住密码
@@ -64,5 +73,6 @@
 </body>
 
 <script src="assets/js/jQuery.js" charset="utf-8" ></script>
+<!-- <script src="assets/js/jquery.cookie.js" charset="utf-8"></script> -->
 <script src="assets/js/sign_up.js" charset="utf-8" ></script>
 </html>

@@ -13,16 +13,16 @@ import javax.servlet.http.HttpSession;
 import myjavabean.model.User;
 
 /**
- * Servlet implementation class ConfirmSessionServlet
+ * Servlet implementation class SignOutServlet
  */
-@WebServlet("/confirmsession")
-public class ConfirmSessionServlet extends HttpServlet {
+@WebServlet("/signout")
+public class SignOutServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ConfirmSessionServlet() {
+    public SignOutServlet() {
         super();
     }
 
@@ -34,17 +34,20 @@ public class ConfirmSessionServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		
-		try {
-			HttpSession session = request.getSession(false);
-			
-			if (session.getAttribute("user") == null) { // 该会话没有用户登录
-				out.println("failed_null");
-			}
-			else {
-				out.println("success|" + ((User) session.getAttribute("user")).getUemailaddress());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		HttpSession session = request.getSession(false);
+		if (session == null || session.getAttribute("user") == null) {
+			System.out.println("已注销");
+		}
+		else {
+			User user = (User) session.getAttribute("user");
+			System.out.println("注销用户" + user.getUemailaddress());
+			session.removeAttribute("user");
+			out.println("success");
+//			System.out.println("用户" + session.getAttribute("uemailaddress") + "请求注销");
+//			if ((session = null) == null) {
+//				System.out.println("注销成功！");
+//				out.println("success");
+//			}
 		}
 	}
 

@@ -11,37 +11,56 @@ $(document).ready(function(){
 
 	// $("#show_uemailaddress").text("uemailaddress");
 
+	$("span#sign_out").hide();
 	$.post("confirmsession", function(result){
-		if (result.indexOf("success") >= 0) { // 该用户已登录
-			resultArr = result.split("|");
-			uemailaddress = resultArr[1];
+		resultArr = result.split("|");
+		uemailaddress = resultArr[1];
+		if (resultArr[0].indexOf("success") >= 0) { // 该用户已登录
 
 			// $("#show_uemailaddress").html("uemailaddress");
-			$("#show_uemailaddress").html(uemailaddress + "，欢迎您回来！");
-			$("button#signin").remove();
-			$("button#signup").remove();
+			$("span#sign_in_or_up").html(uemailaddress + "，欢迎回来！ "
+			);
+			$("span#sign_out").show();
+			$("#sign_out").click(function(){
+				r = confirm("确定要退出吗？");
+				if (r) {
+					$.post("signout", function(result){
+						if (result.indexOf("success") >= 0) {
+							location.reload();
+						}
+					});
+				}
+				else {
+					alert("false");
+				}
+			});
+
+			// $("button#signin").remove();
+			// $("button#signup").remove();
 			
 			// alert("OK");
 		}
-		else {
-			alert(result);
-		}
+		// else {
+		// 	alert(result);
+		// }
 	});
 
-	$("button#signin").click(function(){
-		$(window).attr('location','./signin.html');
-	});
-	$("button#signup").click(function(){
-		$(window).attr('location','./signup.html');
-	});
+	// $("button#signin").click(function(){
+	// 	$(window).attr('location','./signin.html');
+	// });
+	// $("button#signup").click(function(){
+	// 	$(window).attr('location','./signup.html');
+	// });
 
 	$("#input_text_commit").click(function(){
+		$("p.error_info").html("提交成功，正在处理！");
 		var sInput = $("textarea.sents").val();
 		// 与 PUServlet 交互
 		$.post("puservlet", {
 			sents: sInput
 		}, function(result){
 			if(result != "null") {
+				$("p.error_info").hide();
 				var parts = result.split("|");
 				var pos_neg_counts = parts[0].split(" "); // pos neg 分别统计出来的个数
 				var pos_strs_positions = parts[1]; // 输入文本中，所有 pos 类句子的下标

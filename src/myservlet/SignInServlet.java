@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import myjavabean.model.User;
 import myjavabean.util.DBHelper;
 
 /**
@@ -65,7 +66,10 @@ public class SignInServlet extends HttpServlet {
 							System.out.println("[SignIn]: 登录成功");
 //							if (postreason != null) { // 网站系统--为用户建立session标识
 							HttpSession session = request.getSession(true);
-							session.setAttribute("uemailaddress", uemailaddress);
+							User user = new User();
+							user.setUemailaddress(uemailaddress);
+							user.setUpassword(upassword);
+							session.setAttribute("user", user);
 							System.out.println("为用户" + uemailaddress + "建立session，id：" + session.getId());
 //								if (session != null) {
 //									System.out.println("为用户" + uemailaddress + "建立session，id：" + session.getId());
