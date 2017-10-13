@@ -1,25 +1,31 @@
-function showgaue(place,data){
+// gauge.js
+function showgaue(place,data)
+{
 	require.config({
-        paths: {
+		paths: 
+		{
             echarts: 'http://echarts.baidu.com/build/dist'
         }
     });
     require(
         [
             'echarts',
-            // 按需加载所需图表，如需动态类型切换功能，别忘了同时加载相应图表
             'echarts/chart/gauge',
         ],
-        function (ec) {
+		function (ec) 
+		{
             var myChart1 = ec.init(place);
 			window.onresize = myChart1.resize;
             var option = {
-				tooltip : {
+				tooltip : 
+				{
 					formatter: "{a} <br/>{b} : {c}%"
 				},
-				toolbox: {
+				toolbox: 
+				{
 					show : true,
-					feature : {
+					feature : 
+					{
 						mark : {show: true},
 						restore : {show: true},
 						saveAsImage : {show: true}
@@ -35,7 +41,8 @@ function showgaue(place,data){
 				]
 			};      
             myChart1.setOption(option);
-			window.addEventListener("resize",function(){
+			window.addEventListener("resize",function()
+			{
 				myChart1.resize();
 			});
         }

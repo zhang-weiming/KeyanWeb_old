@@ -1,41 +1,47 @@
-/**
- * force.js
- */
-function showforce(place,nodes,links){
+// force.js
+function showforce(place,nodes,links)
+{
     require.config({
-        paths : {
+        paths : 
+        {
             echarts: 'http://echarts.baidu.com/build/dist'
         }
     });
     require(
         [
             'echarts',
-            // 按需加载所需图表，如需动态类型切换功能，别忘了同时加载相应图表
             'echarts/chart/force',
             'echarts/chart/chord'
         ],
-        function (ec) {
+        function (ec) 
+        {
             var myChart = ec.init(place);
 			window.onresize = myChart.resize; 
             var option = {
-                    title : {
+                    title : 
+                    {
                         x:'right',
                         y:'bottom'
                     },
-                    tooltip : {
+                    tooltip : 
+                    {
                         trigger : 'item',
                         formatter: '{a} : {b}'
                     },
-                    toolbox : {
+                    toolbox : 
+                    {
                         show : true,
-                        feature : {
+                        feature : 
+                        {
                             restore : {show: true},
                             magicType: {show: true, type: ['force', 'chord']},
                             saveAsImage : {show: true}
                         }
                     },
-                    legend : {
-                        textStyle : {
+                    legend : 
+                    {
+                        textStyle : 
+                        {
                             fontSize : 14,
                         },
                         x: 'left',
@@ -46,41 +52,46 @@ function showforce(place,nodes,links){
                             type : 'force',
                             name : "实体",
                             ribbonType : false,
-                            categories : [{
-                                    name : '对象',
-									//symbolSize : 30,
+                            categories : [
+                                {
+                                    name : '对象'
                                 },
                                 {
-                                    name : '属性',
-									//symbolSize : 30,
+                                    name : '属性'
                                 }
 							],
                             itemStyle: {
-                                normal: {
-                                    label: {
+                                normal: 
+                                {
+                                    label: 
+                                    {
                                         show: true,
-                                        textStyle: {
+                                        textStyle: 
+                                        {
                                             color: '#333'
                                         }
                                     },
-                                    nodeStyle : {
+                                    nodeStyle : 
+                                    {
                                         brushType : 'both',
                                         borderColor : 'rgba(255,215,0,0.4)',
                                         borderWidth : 1
                                     },
-                                    linkStyle: {
+                                    linkStyle: 
+                                    {
                                         type: 'curve'
                                     }
                                 },
-                                emphasis: {
-                                    label: {
+                                emphasis: 
+                                {
+                                    label: 
+                                    {
                                         show: false
-                                        // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
                                     },
-                                    nodeStyle : {
+                                    nodeStyle : 
+                                    {
                                         r: 30
-                                    },
-                                    linkStyle : {}
+                                    }
                                 }
                             },
 							size : '85%',
@@ -98,24 +109,28 @@ function showforce(place,nodes,links){
                 };
             myChart.setOption(option);		
             var ecConfig = require('echarts/config');
-            function focus(param) {
+            function focus(param) 
+            {
                 var data = param.data;
                 var links = option.series[0].links;
                 var nodes = option.series[0].nodes;
                 if (
                     data.source !== undefined
                     && data.target !== undefined
-                ) { //点击的是边
+                ) 
+                { //点击的是边
                     var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
                     var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
                     console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
-                } else { // 点击的是点
+                } 
+                else 
+                { // 点击的是点
                     console.log("选中了" + data.name + '(' + data.value + ')');
                 }
             }
             myChart.on(ecConfig.EVENT.CLICK, focus)
-
-            myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
+            myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () 
+            {
                 console.log(myChart.chart.force.getPosition());
             });
         }

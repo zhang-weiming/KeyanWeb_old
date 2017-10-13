@@ -1,4 +1,4 @@
-<!-- signin.html -->
+<!-- feedback.html -->
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -45,6 +45,10 @@
       margin-top: 10px;
       margin-bottom: 10px;
     }
+    #feedback
+    {
+      height: 280px;
+    }
     .error_info
     {
       font-size: 14px;
@@ -69,42 +73,39 @@
 </div>
 <div class="header">
   <div class="am-g">
-      <div class="am-u-sm-4">
-        <span class="am-icon-arrow-left am-icon-md back-view">
-        </span>
-      </div>
-      <div class="am-u-sm-4">
-        <h1 class="top-title">登录</h1>
-      </div>
-      <div class="am-u-sm-4">
-      </div>
+    <div class="am-u-sm-4">
+      <span class="am-icon-arrow-left am-icon-md back-view">
+      </span>
+    </div>
+    <div class="am-u-sm-4">
+      <h1 class="top-title">反馈</h1>
+    </div>
+    <div class="am-u-sm-4">
+    </div>
   </div>
-  <hr />
+</div>
+<hr />
 </div>
 <div class="am-g">
   <div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
     <div class="am-form">
-      <input type="email" id="uemailaddress" class="my-form-row" placeholder="邮箱" />
-      <div class="error_info_uemailaddress error_info">
-      </div>
-      <input type="password" id="upassword" class="my-form-row" placeholder="密码" />
-      <div class="error_info_upassword error_info">
+      <textarea id="feedback" placeholder="请在此处填写您的宝贵建议！" value="" ></textarea>
+      <div class="error_info_feedback error_info">
       </div>
       <br>
       <div class="am-cf">
-        <button id="" class="sign_in am-btn am-btn-primary am-btn-sm am-fl">登 录</button>
-        <button id="" class="forget_password am-btn am-btn-default am-btn-sm am-fr">忘记密码</button>
+        <button id="" class="feedback-commit am-btn am-btn-primary am-btn-sm am-center">提 交</button>
       </div>
     </div>
     <hr>
     <div class="body-text">
-      登录您的账号能帮助我们识别您的身份。
+      您的建议能够推动我们继续努力，为您以及广大用户提供更加优质的服务！
     </div>
   </div>
 </div>
 </body>
 <script src="assets/js/jQuery.js">
 </script>
-<script src="assets/js/sign_in.js" charset="utf-8" >
+<script src="assets/js/feedback.js" charset="utf-8" >
 </script>
 </html>

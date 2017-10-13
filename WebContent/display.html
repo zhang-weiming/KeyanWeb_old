@@ -1,44 +1,116 @@
-<!-- 展示主界面 -->
+<!-- display.html -->
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<title>面向论坛数据的负面信息的获取与分析系统</title>
-	<link rel="stylesheet" href="assets/css/display.css" type="text/css" charset="utf-8" />
-	<link rel="stylesheet" href="assets/css/amazeui.min.css" type="text/css" charset="utf-8" />
+	<link rel="stylesheet" href="assets/css/amazeui.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="assets/css/display.css" type="text/css" charset="utf-8" />
+  <style type="text/css">
+    #user_state 
+    {
+      float: right;
+    }
+    .link-contact-us a:link 
+    {
+      color:#ddd;
+      text-decoration:none;
+    }
+    .link-contact-us a:hover 
+    {
+      color:#fff;
+      text-decoration:none;
+    }
+    .link-contact-us a:visited 
+    {
+      color:#ddd;
+      text-decoration:none;
+    }
+    #signin a:link
+    {
+      color: #555;
+      text-decoration:none;
+    }
+    #signin a:hover 
+    {
+      color:#000;
+      text-decoration:none;
+    }
+    #signin a:visited 
+    {
+      color: #555;
+      text-decoration:none;
+    }
+    .link-contact-us 
+    {
+      font-size: 15px;
+      margin-right: 1%;
+    }
+    .contact-us 
+    {
+      margin-left: 5%;
+      margin-right: 5%;
+    }
+    h6 {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+    .contact-us .content-text
+    {
+      margin-left: 2%;
+      margin-right: 2%;
+      font-size: 15px;
+      color: rgb(150, 115, 115)
+    }
+    .feedback
+    {
+      margin-left: 5%;
+      margin-right: 5%;
+    }
+    .feedback-link
+    {
+      font-size: 16px;
+    }
+    .bottom-bar 
+    {
+      width: 100%;
+      height: 30px;
+      background-color: #999;
+      margin-top: 20px;
+    }
+  </style>
 </head>
-
 <body>
 <div class="top_bar" >
-
+  <div class="link-contact-us">
+    <a href="#contact-us">联系我们</a>
+  </div>
 </div>
 <header class="am-topbar">
   <h1 class="am-topbar-brand">
     <a href="#">面向论坛数据的负面信息的获取与分析系统</a>
   </h1>
-
-  <!-- <div id="user_state" class="am-topbar-brand am-topbar-right">
-     <a>haha</a>
-  </div> -->
-
-  <div id="user_state" class="am-topbar-right" style="float:right">
-    <div class="show_uemailaddress am-topbar-brand"><span id="sign_in_or_up">请您 <a id="signin" href="./signin.html">登录</a> | <a id="signup" href="./signup.html">注册</a></span><span id="sign_out">[<a>退出登录</a>]</span></div>
-    <!-- <button id="signin" class="am-btn am-btn-default am-topbar-btn am-btn-sm">登录</button>
-    <button id="signup" class="am-btn am-btn-default am-topbar-btn am-btn-sm">注册</button> -->
+  <div id="user_state" class="am-topbar-right">
+    <div class="show_uemailaddress am-topbar-brand">
+      <span id="sign_in_or_up">
+        请您 <a id="signin" href="./signin.html">登录</a> | <a id="signup" href="./signup.html">注册</a>
+      </span>
+      <span id="sign_out">
+        [<a>退出登录</a>]
+      </span>
+    </div>
   </div>
-
 </header>
 <div class="main_body">
   <div class="am-form">
     <fieldset>
       <legend>文本分析</legend>
-
       <div class="am-form-group">
         <label for="doc-ta-1">输入文本</label>
-        <textarea class="sents" rows="5" id="doc-ta-1"></textarea>
+        <textarea class="sents" rows="5" id="doc-ta-1">
+        </textarea>
       </div>
-
       <button type="button" id="input_text_commit" class="am-btn am-btn-default" >提交</button>
       <p class="error_info"></p>
     </fieldset>
@@ -48,32 +120,61 @@
   <h6 class="title-left">分类标注</h6>
   <table id="DC-legend" style="display: none;">
     <tr>
-      <td><div id="DC-legend-pos"></div></td>
-      <td>&nbsp;负面&nbsp;&nbsp;</td>
-      <td><div id="DC-legend-neg"></div></td>
-      <td>&nbsp;正面</td>
+      <td>
+        <div id="DC-legend-pos"></div>
+      </td>
+      <td>
+        &nbsp;负面&nbsp;&nbsp;
+      </td>
+      <td>
+        <div id="DC-legend-neg"></div>
+      </td>
+      <td>
+        &nbsp;正面
+      </td>
     </tr>
   </table>
   <div id="display-classification" class="label-img before-img">
-    <table class="table-display" border='1' cellspacing="0" cellpadding="0"></table>
-    <div></div>
+    <table class="table-display" border='1' cellspacing="0" cellpadding="0">
+    </table>
   </div>
   <hr />
-  <h6 class="title-left">正负例分布</h6><div id="main1" class="pu-img before-img"></div>
+  <h6 class="title-left">正负例分布</h6>
+  <div id="main1" class="pu-img before-img"></div>
   <hr />
-  <h6 class="title-left">细粒度</h6><div id="main2" class="transE-img before-img"></div>
-  <!-- 分析结果展示部分 -->
+  <h6 class="title-left">细粒度</h6>
+  <div id="main2" class="transE-img before-img"></div>
   <hr />
 </div>
-<div class="display"> </div>
-<div class="div-test"> </div>
-
-<script src="assets/js/jQuery.js" charset="utf-8"></script>
-<!-- <script src="assets/js/jquery.cookie.js" charset="utf-8"></script> -->
-<script src="assets/js/echarts.js" charset="utf-8"></script>
-<script src="assets/js/display.js" charset="utf-8"></script>
-<script src="assets/js/pie.js" charset="utf-8"></script>
-<script src="assets/js/gauge.js" charset="utf-8"></script>
-<script src="assets/js/force.js" charset="utf-8"></script>
+<div class="display">
+</div>
+<div class="div-test">
+</div>
+<div id="contact-us" class="contact-us">
+  <h6>联系我们</h6>
+  <div class="content-text">
+    邮箱：1210500550@qq.com
+    <br>
+    地址：山西省太原市小店区坞城路92号山西大学
+  </div>
+</div>
+<br>
+<div id="feedback" class="feedback">
+  <a class="feedback-link" href="./feedback.html">我有更好的建议！</a>
+</div>
+<div class="bottom-bar">
+</div>
 </body>
+<script src="assets/js/jQuery.js">
+</script>
+<script src="assets/js/echarts.js">
+</script>
+<script src="assets/js/display.js" charset="utf-8">
+</script>
+<script src="assets/js/pie.js" charset="utf-8">
+</script>
+<script src="assets/js/gauge.js" charset="utf-8">
+</script>
+<script src="assets/js/force.js" charset="utf-8">
+</script>
 </html>

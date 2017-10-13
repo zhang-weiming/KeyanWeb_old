@@ -1,56 +1,56 @@
-/**
- * display.css
- */
-body {
+/* display.css */
+body 
+{
 	margin: 0 0;
 }
-.top_bar {
+.top_bar 
+{
 	width: 100%;
 	height: 30px;
-	background-color: #999
+	background-color: #999;
+	text-align: right;
 }
-.main_body {
+.main_body 
+{
 	margin: auto 5%;
 }
-#doc-ta-1 {
+#doc-ta-1 
+{
 	height: 200px;
 	resize: none;
 }
-div.show_uemailaddress {
+div.show_uemailaddress 
+{
 	font-size: 14px;
 }
-.title-left {
-	
-}
-.m-chart{
-	/* ... */
-}
-table#DC-legend {
+table#DC-legend 
+{
 	align-content: center;
 	font-size: 14px;
 }
-#DC-legend-pos {
+#DC-legend-pos 
+{
 	width: 30px;
 	height: 15px;
 	background-color: #FFDEAD;
 }
-#DC-legend-neg {
+#DC-legend-neg 
+{
 	width: 30px;
 	height: 15px;
 	background-color: #C6E9F5;
 }
-.before-img {
+.before-img 
+{
 	width: 100%;
 	height: 100px;
 	text-align: center;
-	/* margin-left: auto;
-	margin-right: auto; */
-	/* border: solid 2px black */
 }
-#display-classification {
+#display-classification 
+{
 	margin-top: 10px;
 }
-.td-column-label {
+.td-column-label 
+{
 	text-align: center;
-	/* background-color: #0f0; */
 }

@@ -1,9 +1,9 @@
-/**
- * pie.js
- */
-function showpie(place, data) {
+// pie.js
+function showpie(place, data) 
+{
     require.config({
-        paths: {
+        paths: 
+        {
             echarts: 'http://echarts.baidu.com/build/dist'
         }
     });
@@ -14,29 +14,37 @@ function showpie(place, data) {
             'echarts/chart/pie',
             'echarts/chart/funnel'
         ],
-        function (ec) {
+        function (ec) 
+        {
             var myChart2 = ec.init(place);
 			window.onresize = myChart2.resize;
             var option = {
-                tooltip: {
+                tooltip: 
+                {
                     trigger: 'item',
                     formatter: "{a} <br/>{b} : {c} ({d}%)"
                 },
-                legend: {
+                legend: 
+                {
                     orient: 'vertical',
                     x: 'left',
                     data: ['负面','正面']
                 },
-                toolbox: {
+                toolbox: 
+                {
                     show: true,
-                    feature: {
+                    feature: 
+                    {
                         mark: {show: true},
                         dataView: {show: true, readOnly: false},
-                        magicType: {
+                        magicType: 
+                        {
                             show: true,
                             type: ['pie', 'funnel'],
-                            option: {
-                                funnel: {
+                            option: 
+                            {
+                                funnel: 
+                                {
                                     x: '25%',
                                     width: '50%',
                                     funnelAlign: 'center',
@@ -54,34 +62,40 @@ function showpie(place, data) {
                         name: '句子数量',
                         type: 'pie',
                         radius: ['50%', '70%'],
-                        itemStyle: {
-                            normal: {
-                                label: {
+                        itemStyle: 
+                        {
+                            normal: 
+                            {
+                                label: 
+                                {
                                     show: false
                                 },
-                                labelLine: {
+                                labelLine: 
+                                {
                                     show: false
                                 }
                             },
-                            emphasis: {
-                                label: {
+                            emphasis: 
+                            {
+                                label: 
+                                {
                                     show: true,
                                     position: 'center',
-                                    textStyle: {
+                                    textStyle: 
+                                    {
                                         fontSize: '30',
                                         fontWeight: 'bold'
                                     }
                                 }
                             }
                         },
-
                         data: data
                     }
                 ]
             };
-
             myChart2.setOption(option);
-			window.addEventListener("resize",function(){
+            window.addEventListener("resize",function()
+            {
 				myChart2.resize();
 			});			
         }
