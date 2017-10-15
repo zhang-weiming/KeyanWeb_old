@@ -40,6 +40,7 @@ $(document).ready(function(){
 
 	$("#input_text_commit").click(function(){
 		$("p.error_info").html("提交成功！正在处理，请稍等。");
+		$("p.error_info").show();
 		var sInput = $("textarea.sents").val();
 		// 与 PUServlet 交互
 		$.post("puservlet", {
