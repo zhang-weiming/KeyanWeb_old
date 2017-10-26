@@ -64,6 +64,7 @@ public class FeedBackServlet extends HttpServlet {
 		}
 		else {
 			System.out.println("[反馈]:邮箱:" + uemailaddress + "\n\t正在提交反馈:" + feedinfo + "\n\t携带输入文本:" + inputtext);
+			dbHelper.init();
 			if ( dbHelper.containsUemailaddress(uemailaddress) ) { // 该邮箱已注册，可以提交反馈
 				if (feedinfo.equals("") || feedinfo == null) { // 反馈信息为空，不予以提交
 					System.out.println("\t提交失败：反馈信息为空，不予以提交");
@@ -90,7 +91,7 @@ public class FeedBackServlet extends HttpServlet {
 				out.println("failed_emailaddress_is_not_signed_up");
 			}
 		} // else
-		
+		dbHelper.close();
 	}
 
 	/**

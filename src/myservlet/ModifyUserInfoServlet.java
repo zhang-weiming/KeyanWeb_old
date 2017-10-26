@@ -68,7 +68,7 @@ public class ModifyUserInfoServlet extends HttpServlet {
 			}
 			else { // 拿到邮箱，尝试获取信息
 				user.setUemailaddress( new String(uemailaddress.getBytes(), "UTF-8") );
-				
+				dbHelper.init();
 				if ( dbHelper.containsUemailaddress(user.getUemailaddress()) ) { // 该邮箱可用
 					try {
 						if (postreason.equals("get")) { // 获取个人信息
@@ -87,9 +87,8 @@ public class ModifyUserInfoServlet extends HttpServlet {
 									+ user.getUcontactway(); // ucontactway
 							System.out.println("请求成功（获取信息）。");
 							out.println("success|" + returnString);
-							return;
 						}
-						if (postreason.equals("modify")) { // 修改个人信息
+						else if (postreason.equals("modify")) { // 修改个人信息
 							uname = request.getParameter("uname");
 							uorganization = request.getParameter("uorganization");
 							ucontactway = request.getParameter("ucontactway");
@@ -112,9 +111,8 @@ public class ModifyUserInfoServlet extends HttpServlet {
 								System.out.println("修改用户个人信息成功！");
 								out.println("success");
 							}
-							return;
 						}
-						if (postreason.equals("upassword")) { // 修改密码
+						else if (postreason.equals("upassword")) { // 修改密码
 							user.setUpassword(request.getParameter("upassword"));
 							if ( 0 == dbHelper.updateUpassword(user) ) { // 出错
 								System.out.println("修改密码出错！");
@@ -138,6 +136,7 @@ public class ModifyUserInfoServlet extends HttpServlet {
 				}
 			} // else
 		} // else
+		dbHelper.close();
 		System.out.println("完");
 	}
 

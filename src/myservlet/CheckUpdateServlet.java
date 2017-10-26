@@ -47,27 +47,25 @@ public class CheckUpdateServlet extends HttpServlet {
 			out.println("failed_version_null");
 		}
 		else {
+			dbHelper.init();
 			latestVersion = dbHelper.getAppLatestVersion();
 			System.out.println("最新版本号：" + latestVersion);
 			if (latestVersion.equals("")) {
 				System.out.println("获取最新版本号失败");
 				out.println("failed_mysql_error");
-				return;
 			}
 			else {
 				if (latestVersion.equals(version)) {
 					System.out.println("已是最新版");
 					out.println("true");
-					return;
 				}
 				else {
 					System.out.println("不是最新版");
 					out.println(latestVersion);
-					return;
 				}
 			}
 		}
-		
+		dbHelper.close();
 	}
 
 	/**

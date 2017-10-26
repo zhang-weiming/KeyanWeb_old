@@ -51,6 +51,7 @@ public class SignInServlet extends HttpServlet {
 		postreason = request.getParameter("postreason");
 		uemailaddress = request.getParameter("uemailaddress");
 		upassword = request.getParameter("upassword");
+		dbHelper.init();
 		
 		System.out.println("[SignIn]: uemailaddress: " + uemailaddress);
 		
@@ -82,27 +83,23 @@ public class SignInServlet extends HttpServlet {
 //							}
 							
 							out.println("success");
-							return;
 						}
 						// 密码不匹配，不允许登录
 						else {
 							System.out.println("[SignIn]: 登录失败 -- 密码不匹配");
 							out.println("failed_password_false");
-							return;
 						}
 					}
 					else {
 						// 该情况应该是数据库中没有该邮箱，但是从实际来看，该情况不会发生
 						System.out.println("[SignIn]: 登录失败 -- 未知错误");
 						out.println("failed_null");
-						return;
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 					// 未知错误，无法判断，不允许登录
 					System.out.println("[SignIn]: 登录失败 -- 未知错误");
 					out.println("failed_unknown_error");
-					return;
 				}
 				
 			}
@@ -115,7 +112,7 @@ public class SignInServlet extends HttpServlet {
 		else {
 			out.println("failed_post_error");
 		}
-		
+		dbHelper.close();
 	}
 
 	/**

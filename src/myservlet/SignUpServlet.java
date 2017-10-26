@@ -61,10 +61,10 @@ public class SignUpServlet extends HttpServlet {
 		user.setUcontactway( ucontactway );
 
 		if (uemailaddress != null) {
+			dbHelper.init();
 			if (dbHelper.containsUemailaddress(uemailaddress)) { // 该邮箱已存在，注册失败
 				System.out.println("该邮箱已存在，注册失败");
 				out.println("failed_emailaddress_have_signed_up");
-				return;
 			}
 			// 该邮箱可注册
 			else {
@@ -72,23 +72,12 @@ public class SignUpServlet extends HttpServlet {
 				request.getSession().setAttribute("user", user);
 				System.out.println("注册成功。邮箱：" + uemailaddress);
 				out.print("success");
-				return;
 			}
 		}
 		else {
 			out.println("failed_post_error");
 		}
-		
-		
-//		int i = dbHelper.insert(user);
-//		System.out.println("[SignUp]: " + i);
-//		if (0 == i) {
-//			out.println("failed");
-//		}
-//		else {
-//			out.println("success");
-//		}
-		
+		dbHelper.close();
 	}
 
 	/**
