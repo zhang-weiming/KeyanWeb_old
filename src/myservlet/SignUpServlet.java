@@ -52,6 +52,7 @@ public class SignUpServlet extends HttpServlet {
 		upassword = request.getParameter("upassword");
 		uorganization = request.getParameter("uorganization");
 		ucontactway = request.getParameter("ucontactway");
+		dbHelper.init();
 		
 //		if (!uname.equals("")) user.setUname(uname);
 		user.setUname(uname);
@@ -60,34 +61,28 @@ public class SignUpServlet extends HttpServlet {
 		user.setUorganization( uorganization );
 		user.setUcontactway( ucontactway );
 
-		if (uemailaddress != null) {
-			if (dbHelper.containsUemailaddress(uemailaddress)) { // 该邮箱已存在，注册失败
-				System.out.println("该邮箱已存在，注册失败");
-				out.println("failed_emailaddress_have_signed_up");
-				return;
+		try {
+			if (uemailaddress != null) {
+				if (dbHelper.containsUemailaddress(uemailaddress)) { // 该邮箱已存在，注册失败
+					System.out.println("该邮箱已存在，注册失败");
+					out.println("failed_emailaddress_have_signed_up");
+				}
+				// 该邮箱可注册
+				else {
+					dbHelper.insert(user);
+					request.getSession().setAttribute("user", user);
+					System.out.println("注册成功。邮箱：" + uemailaddress);
+					out.print("success");
+				}
 			}
-			// 该邮箱可注册
 			else {
-				dbHelper.insert(user);
-				request.getSession().setAttribute("user", user);
-				System.out.println("注册成功。邮箱：" + uemailaddress);
-				out.print("success");
-				return;
+				out.println("failed_post_error");
 			}
-		}
-		else {
-			out.println("failed_post_error");
+			dbHelper.close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
-		
-//		int i = dbHelper.insert(user);
-//		System.out.println("[SignUp]: " + i);
-//		if (0 == i) {
-//			out.println("failed");
-//		}
-//		else {
-//			out.println("success");
-//		}
 		
 	}
 

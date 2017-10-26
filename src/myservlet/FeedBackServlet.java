@@ -74,6 +74,7 @@ public class FeedBackServlet extends HttpServlet {
 					feedback.setFeedInfo(feedinfo);
 					feedback.setInputtext(inputtext);
 //					feedback.setFbdatetime(fbdatetime);
+					dbHelper.init();
 					if ( 0 == dbHelper.insert(feedback) ) { // 插入出错
 						System.out.println("\t提交失败：mysql插入出错");
 						out.println("failed_mysql_error");
@@ -82,7 +83,6 @@ public class FeedBackServlet extends HttpServlet {
 						System.out.println("提交反馈成功");
 						out.println("success");
 					}
-					
 				} //else
 			} // if
 			else { // 该邮箱未被注册，不予以提交
@@ -90,7 +90,7 @@ public class FeedBackServlet extends HttpServlet {
 				out.println("failed_emailaddress_is_not_signed_up");
 			}
 		} // else
-		
+		dbHelper.close();
 	}
 
 	/**

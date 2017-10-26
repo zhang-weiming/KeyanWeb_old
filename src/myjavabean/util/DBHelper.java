@@ -20,6 +20,11 @@ public class DBHelper {
 	public PreparedStatement pstatement = null;
 	
 	public DBHelper() {
+		conn = null;
+		pstatement = null;
+	}
+	
+	public void init() {
 		try {
 			Class.forName(JDBC_DRIVER); // 注册JDBC驱动
 			conn = DriverManager.getConnection(DB_URL, USER, PASSWORD); // 获得连接
@@ -169,11 +174,27 @@ public class DBHelper {
 	}
 	
     public void close() {  
-        try {  
-            this.conn.close();
-            this.pstatement.close();
+        try {
+        	if (this.pstatement != null) {
+                this.pstatement.close();
+                this.pstatement = null;
+        	}
         } catch (SQLException e) {
-            e.printStackTrace();
-        }  
+			System.out.println("[SignIn]: mysql出错！");
+			e.printStackTrace();
+			System.out.println("[SignIn]: mysql出错！");
+        } finally {
+        	try {
+            	if (this.conn != null) {
+                    this.conn.close();
+                    this.conn = null;
+            	}
+        	} catch (SQLException e) {
+    			System.out.println("[SignIn]: mysql出错！");
+    			e.printStackTrace();
+    			System.out.println("[SignIn]: mysql出错！");
+			}
+		}
+		System.out.println("[SignIn]: 关闭数据库连接");
     }  
 }

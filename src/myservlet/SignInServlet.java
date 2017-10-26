@@ -3,6 +3,7 @@ package myservlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import jdk.internal.org.objectweb.asm.tree.TryCatchBlockNode;
 import myjavabean.model.User;
 import myjavabean.util.DBHelper;
 
@@ -51,6 +53,7 @@ public class SignInServlet extends HttpServlet {
 		postreason = request.getParameter("postreason");
 		uemailaddress = request.getParameter("uemailaddress");
 		upassword = request.getParameter("upassword");
+		dbHelper.init();
 		
 		System.out.println("[SignIn]: uemailaddress: " + uemailaddress);
 		
@@ -82,27 +85,34 @@ public class SignInServlet extends HttpServlet {
 //							}
 							
 							out.println("success");
-							return;
 						}
 						// 密码不匹配，不允许登录
 						else {
 							System.out.println("[SignIn]: 登录失败 -- 密码不匹配");
 							out.println("failed_password_false");
-							return;
 						}
 					}
 					else {
 						// 该情况应该是数据库中没有该邮箱，但是从实际来看，该情况不会发生
 						System.out.println("[SignIn]: 登录失败 -- 未知错误");
 						out.println("failed_null");
-						return;
 					}
+					
+					if (rs != null) {
+						rs.close();
+						rs = null;
+					}
+				} catch (SQLException e) {
+					System.out.println("[SignIn]: mysql出错！");
+					e.printStackTrace();
+					System.out.println("[SignIn]: mysql出错！");
 				} catch (Exception e) {
 					e.printStackTrace();
 					// 未知错误，无法判断，不允许登录
 					System.out.println("[SignIn]: 登录失败 -- 未知错误");
 					out.println("failed_unknown_error");
-					return;
+				} finally {
+					dbHelper.close();
 				}
 				
 			}

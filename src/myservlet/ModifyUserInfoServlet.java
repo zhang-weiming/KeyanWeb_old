@@ -57,18 +57,16 @@ public class ModifyUserInfoServlet extends HttpServlet {
 		if (postreason == null || postreason.equals("")) {
 			System.out.println("没有请求原因信息，不予响应。");
 			out.println("failed_postreason_null");
-			return;
 		}
 		else {
 			uemailaddress = request.getParameter("uemailaddress");
 			if (uemailaddress == null || uemailaddress.equals("")) { // 获取邮箱参数失败（出错）
 				System.out.println("获取邮箱参数失败（出错）。邮箱：" + user.getUemailaddress());
 				out.println("failed_emailaddress_null");
-				return;
 			}
 			else { // 拿到邮箱，尝试获取信息
 				user.setUemailaddress( new String(uemailaddress.getBytes(), "UTF-8") );
-				
+				dbHelper.init();
 				if ( dbHelper.containsUemailaddress(user.getUemailaddress()) ) { // 该邮箱可用
 					try {
 						if (postreason.equals("get")) { // 获取个人信息
@@ -81,15 +79,17 @@ public class ModifyUserInfoServlet extends HttpServlet {
 								user.setUcontactway( new String(resultSet.getString(5).getBytes(), "UTF-8") );
 								user.setUdatetime( new String(resultSet.getString(6).getBytes(), "UTF-8") );
 							}
-							
+							if (resultSet != null) {
+								resultSet.close();
+								resultSet = null;
+							}
 							String returnString = user.getUname() + "|" // uname
 									+ user.getUorganization() + "|" // uorganization
 									+ user.getUcontactway(); // ucontactway
 							System.out.println("请求成功（获取信息）。");
 							out.println("success|" + returnString);
-							return;
 						}
-						if (postreason.equals("modify")) { // 修改个人信息
+						else if (postreason.equals("modify")) { // 修改个人信息
 							uname = request.getParameter("uname");
 							uorganization = request.getParameter("uorganization");
 							ucontactway = request.getParameter("ucontactway");
@@ -112,9 +112,8 @@ public class ModifyUserInfoServlet extends HttpServlet {
 								System.out.println("修改用户个人信息成功！");
 								out.println("success");
 							}
-							return;
 						}
-						if (postreason.equals("upassword")) { // 修改密码
+						else if (postreason.equals("upassword")) { // 修改密码
 							user.setUpassword(request.getParameter("upassword"));
 							if ( 0 == dbHelper.updateUpassword(user) ) { // 出错
 								System.out.println("修改密码出错！");
@@ -134,10 +133,10 @@ public class ModifyUserInfoServlet extends HttpServlet {
 				else { // 该邮箱未被注册
 					System.out.println("该邮箱未被注册: " + user.getUemailaddress());
 					out.println("failed_emailaddress_is_not_signed_up");
-					return;
 				}
 			} // else
 		} // else
+		dbHelper.close();
 		System.out.println("完");
 	}
 
