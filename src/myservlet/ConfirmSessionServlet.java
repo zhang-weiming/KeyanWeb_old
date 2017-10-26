@@ -37,14 +37,16 @@ public class ConfirmSessionServlet extends HttpServlet {
 		try {
 			HttpSession session = request.getSession(false);
 			
-			if (session.getAttribute("user") == null) { // 该会话没有用户登录
+			if (session == null || session.getAttribute("user") == null) { // 该会话没有用户登录
 				out.println("failed_null");
 			}
 			else {
 				out.println("success|" + ((User) session.getAttribute("user")).getUemailaddress());
 			}
 		} catch (Exception e) {
+			System.out.println("捕获到异常");
 			e.printStackTrace();
+			System.out.println("捕获到异常");
 		}
 	}
 

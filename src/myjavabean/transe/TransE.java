@@ -108,7 +108,7 @@ public class TransE {
 				int i = 0;
 				while(i < entity.size()) { // 遍历当前句子中的所有名词。
 					if(!this.wordLibMap.containsKey(entity.get(i))) { // 词库中没有当前处理的词语。
-						System.out.println("Error: no such word in wordLib ... \"" + entity.get(i) + "\""); // 服务器端输出提示 没有该词语：[词语文本]。
+//						System.out.println("Error: no such word in wordLib ... \"" + entity.get(i) + "\""); // 服务器端输出提示 没有该词语：[词语文本]。
 						entity.remove(i); // 将改词从当前处理句子的词集中去掉。
 					} // if
 					else {
@@ -131,16 +131,18 @@ public class TransE {
 							if(dist < MARGIN) {
 								flag = true;
 								mList.add(entity.get(i) + " " + entity.get(j)); // 收集符合阈值规则的头尾实体元组。
-								System.out.println(entity.get(i) + ", " + entity.get(j) + " " + dist + " / " + MARGIN); // 服务器端输出提示 该头尾实体文本及之间的曼哈顿距离。
+//								System.out.println(entity.get(i) + ", " + entity.get(j) + " " + dist + " / " + MARGIN); // 服务器端输出提示 该头尾实体文本及之间的曼哈顿距离。
 							}
 						}
 					} // for
 				} // for
 			} // for
 			if(flag) {
+				System.out.println("[细粒度]共抽取出 " + mList.size() + " 个元组");
 				return mList;
 			}
 			else {
+				System.out.println("[细粒度]共抽取出 0 个元组");
 				return null;
 			}
 		} catch(Exception e) {

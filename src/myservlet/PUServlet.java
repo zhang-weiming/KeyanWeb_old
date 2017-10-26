@@ -8,8 +8,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import myjavabean.model.TextPosted;
 import myjavabean.path.MyPath;
 import myjavabean.pu.PU;
+import myjavabean.util.DBHelper;
 @WebServlet("/puservlet")
 public class PUServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -18,11 +21,15 @@ public class PUServlet extends HttpServlet {
 	private long diff;
 	private String sents;
 	private String classifyResult;
+	private DBHelper dbHelper;
+	private TextPosted textPosted;
+	
     public PUServlet() {
         super();
         time = 0;
         currentTime = 0;
         diff = 0;
+        dbHelper = new DBHelper();
     }
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
@@ -35,6 +42,12 @@ public class PUServlet extends HttpServlet {
 			{ // 两次请求间隔大于5s，允许请求。
 				time = currentTime;
 				sents = request.getParameter("sents"); // 获取输入文本
+				
+				dbHelper.init(); // 将用户发送的分析文本存入数据库
+				textPosted = new TextPosted();
+				textPosted.setText(sents);
+				dbHelper.insert(textPosted);
+				
 				classifyResult = PU.svm_classify(sents); // 文本分句、去停用词并分类
 				if(classifyResult != null) {
 					out.print(classifyResult); // 返回处理结果。格式：正例个数 负例个数|[正例在句子数组中的索引值...，以一个空格间隔] （例如：5 3|0 2 3 5 7）
@@ -54,6 +67,7 @@ public class PUServlet extends HttpServlet {
 			e.printStackTrace();
 			out.println("null");
 		}
+		dbHelper.close();
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);

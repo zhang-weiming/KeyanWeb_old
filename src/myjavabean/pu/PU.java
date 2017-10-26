@@ -25,13 +25,17 @@ public class PU {
 				String pos_positions = "";
 				String str = null;
 				int sentId = 0;
-				while((str = bufr.readLine()) != null) {
-					if(!str.equals("")) {
-						if(str.charAt(0) == '-') {
+				while((str = bufr.readLine()) != null) 
+				{
+					if(!str.equals("")) 
+					{
+						if(str.charAt(0) == '-') 
+						{
 							//neg sent
 							negCounter++;
 						}
-						else {
+						else 
+						{
 							//pos sent
 							posCounter++;
 							pos_positions += sentId + " ";
@@ -39,13 +43,12 @@ public class PU {
 					}
 					sentId++;
 				}
-				
 				System.out.println("PU finished...");
 				System.out.println("Pos: " + posCounter + ", Neg: " + negCounter);
-
 				return posCounter + " " + negCounter + '|' + pos_positions.trim();
 			}
-			else {
+			else 
+			{
 				System.out.println("PU failed: No result file...");
 				return null;
 			}

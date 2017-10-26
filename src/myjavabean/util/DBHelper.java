@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 
 import myjavabean.model.FeedBack;
+import myjavabean.model.TextPosted;
 import myjavabean.model.User;
 
 
@@ -92,6 +93,23 @@ public class DBHelper {
 						+ feedback.getFeedInfo() + "\', \'"
 						+ feedback.getInputtext() + "\', \'"
 						+ feedback.getFbdatetime() + "\');";
+			
+//			sql = new String(new String(sql.getBytes(), "UTF-8").getBytes("GBK"));
+			
+			pstatement = conn.prepareStatement(sql);
+			int i = pstatement.executeUpdate();
+			return i;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public int insert(TextPosted textPosted) {
+		try {
+			String sql = "insert into text_posted values(null, \'"
+						+ textPosted.getText() + "\', \'"
+						+ textPosted.getTime() + "\');";
 			
 //			sql = new String(new String(sql.getBytes(), "UTF-8").getBytes("GBK"));
 			
