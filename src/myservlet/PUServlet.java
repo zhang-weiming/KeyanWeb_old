@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import myjavabean.model.TextPosted;
 import myjavabean.path.MyPath;
+import myjavabean.path.PublicVariable;
 import myjavabean.pu.PU;
 import myjavabean.util.DBHelper;
 @WebServlet("/puservlet")
@@ -47,8 +48,9 @@ public class PUServlet extends HttpServlet {
 				textPosted = new TextPosted();
 				textPosted.setText(sents);
 				dbHelper.insert(textPosted);
-				
+				PublicVariable.sents = sents;
 				classifyResult = PU.svm_classify(sents); // 文本分句、去停用词并分类
+				PublicVariable.resultFromPU = classifyResult;
 				if(classifyResult != null) {
 					out.print(classifyResult); // 返回处理结果。格式：正例个数 负例个数|[正例在句子数组中的索引值...，以一个空格间隔] （例如：5 3|0 2 3 5 7）
 				}
