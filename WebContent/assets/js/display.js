@@ -139,13 +139,23 @@ $(document).ready(function()
 							$("div#main2").css("height", "400px");
 							showforce(document.getElementById('main2'), vertex_arr, arc_arr);
 						}
+
+						 $("div.report").html("report");
+						 $.post('androidecharts', {
+						 	postReason: 'getReport',
+						 	myId: '',
+						 }, function(result){
+						 	$("div.report").html(result);
+						 });
 					});
 				} // if
 	//			else 
 	//			{ // 
 	//				$("p.error_info").html("抱歉，没有分析结果！");
 	//			}
+
 			});
+			
 		}
 		else
 		{ // 间隔时间太短，不给予请求

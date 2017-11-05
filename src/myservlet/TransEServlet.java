@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import myjavabean.model.MySessionContext;
 import myjavabean.path.PublicVariable;
 import myjavabean.transe.TransE;
 /**
@@ -21,12 +22,14 @@ import myjavabean.transe.TransE;
 public class TransEServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private String sents;
+	private String myId;
     /**
      * @see HttpServlet#HttpServlet()
      */
     public TransEServlet() {
         super();
         sents = null;
+        myId = null;
     }
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -38,10 +41,16 @@ public class TransEServlet extends HttpServlet {
 		try {
 //			String positionsPara = request.getParameter("positions"); // 获取参数。所有正例句子的索引值。
 			sents = request.getParameter("sents"); // 获取参数。用户输入的文本。
+			myId = request.getParameter("myId");
 			if (sents == null) {
 				//
 			}
 			else {
+				HttpSession session = MySessionContext.getSession(myId);
+				if (session == null) {
+					session = request.getSession(false);
+				}
+				System.out.println("[TransEServlet]SessionId: " + session.getId());
 				TransE transETool = new TransE(); // 初始化TransE算法模型工具类对象
 				ArrayList<String> transEResult = transETool.process(sents); // 调用TransE算法模型对输入文本做细粒度分析。
 				if(transEResult == null) {
@@ -53,9 +62,8 @@ public class TransEServlet extends HttpServlet {
 						returnData += "|" + transEResult.get(i);
 					}
 
-					HttpSession session = request.getSession(false);
-					System.out.println("[TransEServlet]SessionId: " + session.getId());
 					session.setAttribute("resultFromTransE", returnData);
+					session.setAttribute("transEResult", transEResult);
 //					PublicVariable.resultFromTransE = returnData;
 					out.print(returnData); // 返回处理结果。
 				}

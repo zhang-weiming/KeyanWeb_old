@@ -2,6 +2,7 @@ package myservlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import myjavabean.model.MySessionContext;
+import myjavabean.model.Report;
 import myjavabean.path.PublicVariable;
 
 @WebServlet("/androidecharts")
@@ -26,6 +28,7 @@ public class AndroidEchartsServlet extends HttpServlet {
 	private String posSents;
 	private String negSents;
 	private String myId;
+	private ArrayList<String> transEResult;
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -40,6 +43,7 @@ public class AndroidEchartsServlet extends HttpServlet {
         posSents = null;
         negSents = null;
         myId = null;
+        transEResult = null;
     }
 
 	/**
@@ -103,6 +107,10 @@ public class AndroidEchartsServlet extends HttpServlet {
 							negSents += sentsArr[ Integer.parseInt(p) ] + "。";
 						}
 						out.println(negSents);
+						break;
+					case "getReport":
+						transEResult = (ArrayList<String>) session.getAttribute("transEResult");
+						out.println( new Report(transEResult).getReport() );
 						break;
 					default:
 						break;

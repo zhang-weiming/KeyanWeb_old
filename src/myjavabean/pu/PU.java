@@ -50,7 +50,7 @@ public class PU {
 				}
 				System.out.println("PU finished...");
 				System.out.println("\tPos: " + posCounter + ", Neg: " + negCounter);
-				System.out.println("\tPos: " + pos_positions + ", Neg: " + neg_positions);
+				System.out.println("\tPos: " + pos_positions.trim() + ", Neg: " + neg_positions.trim());
 				return posCounter + " " + negCounter + "|" + pos_positions.trim() + "|" + neg_positions.trim();
 			}
 			else 

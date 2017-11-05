@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import myjavabean.model.MySessionContext;
 import myjavabean.model.TextPosted;
 import myjavabean.path.MyPath;
 import myjavabean.path.PublicVariable;
@@ -23,6 +24,7 @@ public class PUServlet extends HttpServlet {
 	private long diff;
 	private String sents;
 	private String classifyResult;
+	private String myId;
 	private DBHelper dbHelper;
 	private TextPosted textPosted;
 	
@@ -31,6 +33,7 @@ public class PUServlet extends HttpServlet {
         time = 0;
         currentTime = 0;
         diff = 0;
+        myId = null;
         dbHelper = new DBHelper();
     }
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -38,12 +41,14 @@ public class PUServlet extends HttpServlet {
 		response.setCharacterEncoding("utf-8");
 		PrintWriter out = response.getWriter();
 		try {
+//			System.out.println(MyPath.WEB_INF_DIR_PATH);
 			currentTime = new Date().getTime();
 			diff = currentTime - time;
 			if (diff > 5000) 
 			{ // 两次请求间隔大于5s，允许请求。
 				time = currentTime;
 				sents = request.getParameter("sents"); // 获取输入文本
+				myId = request.getParameter("myId"); // 获取sessionid
 				
 				dbHelper.init(); // 将用户发送的分析文本存入数据库
 				textPosted = new TextPosted();
@@ -52,7 +57,10 @@ public class PUServlet extends HttpServlet {
 				classifyResult = PU.svm_classify(sents); // 文本分句、去停用词并分类
 //				PublicVariable.sents = sents;
 //				PublicVariable.resultFromPU = classifyResult;
-				HttpSession session = request.getSession(true);
+				HttpSession session = MySessionContext.getSession(myId);
+				if (session == null) {
+					session = request.getSession(true);
+				}
 				System.out.println("[PUServlet] SessionId: " + session.getId());
 				
 				session.setAttribute("sents", sents);

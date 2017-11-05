@@ -74,6 +74,7 @@ public class SignInServlet extends HttpServlet {
 		//								if (postreason != null) { // 网站系统--为用户建立session标识
 										HttpSession session = request.getSession(true);
 										MySessionContext.AddSession(session);
+										System.out.println("[SignInServlet]" + session.getId());
 										User user = new User();
 										user.setUemailaddress(uemailaddress);
 										user.setUpassword(upassword);
@@ -102,6 +103,7 @@ public class SignInServlet extends HttpServlet {
 									System.out.println("[SignIn]: 登录失败 -- 未知错误");
 									out.println("failed_null");
 								}
+								rs.close();
 							} catch (Exception e) {
 								e.printStackTrace();
 								// 未知错误，无法判断，不允许登录
@@ -127,6 +129,7 @@ public class SignInServlet extends HttpServlet {
 					}
 					else {
 						MySessionContext.AddSession(sessionDefaultUser);
+						System.out.println("[SignInServlet]" + sessionDefaultUser.getId());
 						out.println(sessionDefaultUser.getId());
 					}
 					break;
