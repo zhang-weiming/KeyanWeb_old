@@ -14,9 +14,9 @@
 <script type="text/javascript" src="../assets/js/jQuery.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
-        $("#place_for_pie").html("ok");
         $.post('../androidecharts', {
-            postReason: 'showForce'
+            postReason: 'showForce',
+            myId: window.androidJsObjectForce.getMyId(),
         }, function(result){
             var pairs = result.split("|");
             if(pairs[0] == "ERROR") 

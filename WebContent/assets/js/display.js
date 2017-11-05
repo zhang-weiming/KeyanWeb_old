@@ -67,46 +67,53 @@ $(document).ready(function()
 					$("p.error_info").hide();
 					var pos_neg_counts = parts[0].split(" "); // pos neg 分别统计出来的个数
 					var pos_strs_positions = parts[1]; // 输入文本中，所有 pos 类句子的下标
+					var neg_strs_positions = parts[2]; // 输入文本中，所有 neg 类句子的下标
+					transESents = ""; // 发送细粒度分析所需要的所有负面句子
 					pos_color='#F4A460';
 					neg_color='#7FFFD4';
 					$("#DC-legend").css("display", "block");
 					$("div.label-img").removeClass("before-img");
 					$("tr").remove(".tr-display");
-					positions = $.trim(pos_strs_positions).split(" ");
+					pos_positions = $.trim(pos_strs_positions).split(" ");
 					sInput_parts = sInput.split(/[。！？]/);
 					a = 1;
 					for(i = 0; i < sInput_parts.length; i++) 
 					{
 						if($.trim(sInput_parts[i]) != "") 
 						{
-							temp_str = "<tr class=\"tr-display\">" + 
-											"<td class=\"td-column-label\">" + 
+							temp_str = "<tr class='tr-display'>" + 
+											"<td class='td-column-label'>" + 
 												(a) + 
 											"</td>" + 
-											"<td " + "id=\"td-column-content-" + i + "\" class=\"td-column-content\">" + 
+											"<td " + "id='td-column-content-" + i + "' class='td-column-content'>" + 
 												sInput_parts[i] + 
 											"</td>" + 
 										"</tr>";
 							$(".table-display").append(temp_str);
-							$("td#td-column-content-" + i).css("background-color", "#BFEFFF");
+							$("td#td-column-content-" + i).css("background-color", "#BFEFFF"); // 统一设置成neg
 							a++;
 						}
 					}
-					for(i = 0; i < positions.length; i++) 
+					for(i = 0; i < pos_positions.length; i++) 
 					{
-						$("td#td-column-content-" + positions[i]).css("background-color", "#FFDEAD");
+						$("td#td-column-content-" + pos_positions[i]).css("background-color", "#FFDEAD"); // 修正pos
+						transESents += sInput_parts[ parseInt(pos_positions[i]) ] + "。";
 					}
-					$("div.pu-img").removeClass("before-img");
+
+					$("div.pu-img").removeClass("before-img"); // 饼图
 					$("div#main1").css("height", "400px");
 					showpie(document.getElementById('main1'), [
 							{value: parseInt(pos_neg_counts[0]),name: '负面', selected:false}, 
 							{value: parseInt(pos_neg_counts[1]),name: '正面'}
 						]
 					);
-					$.post("transeservlet", 
+
+					
+					$.post("transeservlet", // 发送细粒度分析请求
 					{
-						positions: pos_strs_positions,
-						sents: sInput
+						sents: transESents
+						// positions: pos_strs_positions,
+						// sents: sInput
 					}, function(result)
 					{
 						var pairs = result.split("|");

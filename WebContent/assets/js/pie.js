@@ -1,5 +1,5 @@
 // pie.js
-function showpie(place, data) 
+function showpie(place, data, myId) 
 {
     require.config({
         paths: 
@@ -97,7 +97,12 @@ function showpie(place, data)
             window.addEventListener("resize",function()
             {
 				myChart2.resize();
-			});			
+            });
+            
+            myChart2.on('click', function(params){
+                // window.location.href = encodeURIComponent(params.name) + '.html';
+                window.open(encodeURIComponent(params.name) + '.html?myId=' + myId);
+            });
         }
     );
 }

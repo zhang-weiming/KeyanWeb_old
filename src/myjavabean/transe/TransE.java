@@ -150,6 +150,68 @@ public class TransE {
 		}
 		return null;
 	}
+    public ArrayList<String> process(String sInput) {
+        int n = VECTOR_N;		// 嵌入维数
+		int margin = MARGIN;	// 阈值
+		
+		String[] pos_sents = sInput.split("。"); // 将输入文本按中文标点符号句号、感叹号、问号分句。
+//		System.out.println("[TransE]");
+//		for (String sent : pos_sents) {
+//			System.out.println(sent);
+//		}
+		try {
+			ArrayList<String> mList = new ArrayList<String>();
+			mList.clear();
+			boolean flag = false;
+			for(String sent : pos_sents) { // 遍历所有正例句子。
+				ArrayList<String> entity = getNoun(sent); // 获取当前句子中的所有名词。
+				ArrayList<String> entityId = new ArrayList<String>();
+//				entityId.clear();
+				int i = 0;
+				while(i < entity.size()) { // 遍历当前句子中的所有名词。
+					if(!this.wordLibMap.containsKey(entity.get(i))) { // 词库中没有当前处理的词语。
+//						System.out.println("Error: no such word in wordLib ... \"" + entity.get(i) + "\""); // 服务器端输出提示 没有该词语：[词语文本]。
+						entity.remove(i); // 将改词从当前处理句子的词集中去掉。
+					} // if
+					else {
+						String temp = String.valueOf(this.wordLibMap.get(entity.get(i))); // 获取词语对应id。
+						int restTimes = STRING_WIDTH - temp.length();
+						for(int j = 0; j < restTimes; j++)
+							temp = "0" + temp; // 按规定长度，整理id的字符串长度。
+						entityId.add(temp); // 装载 entity_id
+						i++;
+					}
+				} // for
+				double[][] entityVector = new double[entityId.size()][VECTOR_N];
+				for (i = 0; i < entityVector.length; i++) {
+					entityVector[i] = this.entityId2VecMap.get(entityId.get(i)); // 装载该句子所包含词的向量。
+				}
+				for(i = 0; i < entityVector.length; i++) {
+					for(int j = 0; j < entityVector.length; j++) {
+						if(i != j) {
+							double dist = calcSum(entityVector[i], entityVector[j], this.relationVector); // 两两之间计算曼哈顿距离
+							if(dist < MARGIN) {
+								flag = true;
+								mList.add(entity.get(i) + " " + entity.get(j)); // 收集符合阈值规则的头尾实体元组。
+//								System.out.println(entity.get(i) + ", " + entity.get(j) + " " + dist + " / " + MARGIN); // 服务器端输出提示 该头尾实体文本及之间的曼哈顿距离。
+							}
+						}
+					} // for
+				} // for
+			} // for
+			if(flag) {
+				System.out.println("[细粒度]共抽取出 " + mList.size() + " 个元组");
+				return mList;
+			}
+			else {
+				System.out.println("[细粒度]共抽取出 0 个元组");
+				return null;
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
     public double calcSum(double[] e1, double[] e2, double[] rel) {// 计算实体e2和e1+rel的曼哈顿距离
         double sum = 0;
         for(int ii = 0; ii < e1.length; ii++)

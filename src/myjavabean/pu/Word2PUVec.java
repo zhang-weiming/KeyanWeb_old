@@ -98,7 +98,7 @@ public class Word2PUVec {
 					temp = temp + (tempListFromSet.get(j) + 1) + ":" + vector[tempListFromSet.get(j)] + " ";
 				}
 				temp = temp.trim();
-				bufw.write("1 " + temp); // 保存对当前句子的文本表示结果。
+				bufw.write("1 " + temp); // 保存对当前句子的文本表示结果到临时文件中。
 				bufw.flush();
 				bufw.newLine();
 				// 组合回一个句子，给 sent[i]

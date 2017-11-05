@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Neg</title>
+    <style type="text/css">
+        .cd-column {
+            width: 100%;
+            padding: 5px 5px;
+            background-color: #BFEFFF;
+            border-radius: 5px;
+            margin-top: 2px;
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+<body style="background-color: #eee;">
+	<label>正面</label>
+    <div id="place_for_pie" style="width:100%;height:400px;">
+        <span>正面句子</span>
+    </div>
+</body>
+
+<script type="text/javascript" src="../assets/js/jQuery.js"></script>
+<script>
+    $(document).ready(function(){
+        var currentUrl = location.search;
+        var myId = '';
+        if (currentUrl.indexOf('?') != -1) {
+            myId = currentUrl.substr(currentUrl.indexOf('=') + 1);
+        }
+        // $('#place_for_pie').html(myId);
+        $('#place_for_pie').html("正在加载，请稍候！");
+        $.post('../androidecharts', {
+            postReason: 'getNeg',
+            myId: myId,
+        }, function(result){
+            var negSents = result.split('。');
+            var sents = '';
+            for (var i = 0; i < negSents.length - 1; i++) {
+                sents += "<div class='cd-column'>" + negSents[i]+ "</div>";
+            }
+            $('#place_for_pie').html(sents);
+        });
+    });
+</script>
+</html>

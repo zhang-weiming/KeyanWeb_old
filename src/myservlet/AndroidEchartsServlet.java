@@ -8,7 +8,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import myjavabean.model.MySessionContext;
 import myjavabean.path.PublicVariable;
 
 @WebServlet("/androidecharts")
@@ -18,7 +20,12 @@ public class AndroidEchartsServlet extends HttpServlet {
 	private String sents;
 	private String resultFromPU;
 	private String resultFromTransE;
+	private String pos_position;
+	private String neg_position;
 	private String postReason;
+	private String posSents;
+	private String negSents;
+	private String myId;
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -27,7 +34,12 @@ public class AndroidEchartsServlet extends HttpServlet {
         sents = null;
         resultFromPU = null;
         resultFromTransE = null;
+        pos_position = null;
+        neg_position = null;
         postReason = null;
+        posSents = null;
+        negSents = null;
+        myId = null;
     }
 
 	/**
@@ -38,22 +50,67 @@ public class AndroidEchartsServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		try {
-			System.out.println("pie.html发送请求");
+//			System.out.println("pie.html发送请求");
 			postReason = request.getParameter("postReason").trim();
-			sents = PublicVariable.sents;
-			resultFromPU = PublicVariable.resultFromPU;
-			resultFromTransE = PublicVariable.resultFromTransE;
-			switch (postReason) {
-			case "showPie":
-				out.println(resultFromPU.trim());
-				break;
-			case "showForce":
-				out.println(resultFromTransE.trim());
-				break;
-			default:
-				break;
+			myId = request.getParameter("myId").trim();
+			HttpSession session = MySessionContext.getSession(myId);
+//			HttpSession session = request.getSession(false);
+			if (session == null) {
+				session = request.getSession(false);
+			}
+			
+			if (session == null) { // 不响应
+				System.out.println("[AndroidEchartsServlet-" + postReason + "]找不到session");
+				out.println("null");
+			}
+			else {
+				System.out.println("[AndroidEchartsServlet-" + postReason + "]找到session: " + session.getId());
+				sents = (String) session.getAttribute("sents");
+				resultFromPU = (String) session.getAttribute("resultFromPU");
+				resultFromTransE = (String) session.getAttribute("resultFromTransE");
+//				sents = PublicVariable.sents;
+//				resultFromPU = PublicVariable.resultFromPU;
+//				resultFromTransE = PublicVariable.resultFromTransE;
+
+				String[] parts = resultFromPU.split("\\|");
+				if (parts.length > 1) {
+					pos_position = parts[1].trim();
+					neg_position = parts[2].trim();
+				}
+				String[] sentsArr = sents.split("[。！？]");
+				switch (postReason) {
+					case "showPie":
+						out.println(resultFromPU.trim());
+						break;
+					case "showForce":
+						out.println(resultFromTransE.trim());
+						break;
+					case "getPosition":
+						out.println(pos_position);
+						break;
+					case "getPos":
+						posSents = "";
+						String[] pos_positions = pos_position.split(" ");
+						for (String p : pos_positions) {
+							posSents += sentsArr[ Integer.parseInt(p) ] + "。";
+						}
+						out.println(posSents);
+						break;
+					case "getNeg":
+						negSents = "";
+						String[] neg_positions = neg_position.split(" ");
+						for (String p : neg_positions) {
+							negSents += sentsArr[ Integer.parseInt(p) ] + "。";
+						}
+						out.println(negSents);
+						break;
+					default:
+						break;
+					}
 			}
 		} catch (Exception e) {
+			out.println("null");
+			System.out.println("[AndroidEchartsServlet-" + postReason + " Error]: " + postReason);
 			e.printStackTrace();
 		}
 	}

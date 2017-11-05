@@ -17,43 +17,49 @@ public class PU {
 	private static final String MODEL_FILE_PATH = WEB_INF_DIR_PATH + "/data/pu/model/model";
 	private static final String RESULT_DIR_PATH = WEB_INF_DIR_PATH + "/data/pu/result";
 	private static final String SOURCE_FILE_PATH = WEB_INF_DIR_PATH + "/data/pu/model/temp.txt";
-	public static String count(File resultFile) {
+	public static String count(File resultFile, String[] sents) {
 		try {
 			if(resultFile.exists()) {
 				BufferedReader bufr = new BufferedReader(new FileReader(resultFile));
 				int posCounter = 0, negCounter = 0;
 				String pos_positions = "";
+				String neg_positions = "";
 				String str = null;
 				int sentId = 0;
 				while((str = bufr.readLine()) != null) 
 				{
+					str = str.trim();
 					if(!str.equals("")) 
 					{
-						if(str.charAt(0) == '-') 
-						{
-							//neg sent
-							negCounter++;
-						}
-						else 
-						{
-							//pos sent
-							posCounter++;
-							pos_positions += sentId + " ";
+						if (!sents[sentId].equals("")) { // 跳过空句子
+							if(str.charAt(0) == '-') 
+							{
+								//neg sent
+								negCounter++;
+								neg_positions += sentId + " ";
+							}
+							else 
+							{
+								//pos sent
+								posCounter++;
+								pos_positions += sentId + " ";
+							}
 						}
 					}
 					sentId++;
 				}
 				System.out.println("PU finished...");
-				System.out.println("Pos: " + posCounter + ", Neg: " + negCounter);
-				return posCounter + " " + negCounter + '|' + pos_positions.trim();
+				System.out.println("\tPos: " + posCounter + ", Neg: " + negCounter);
+				System.out.println("\tPos: " + pos_positions + ", Neg: " + neg_positions);
+				return posCounter + " " + negCounter + "|" + pos_positions.trim() + "|" + neg_positions.trim();
 			}
 			else 
 			{
 				System.out.println("PU failed: No result file...");
 				return null;
 			}
-
 		} catch(Exception e) {
+			System.out.println("PU Error");
 			e.printStackTrace();
 		}
 
@@ -71,6 +77,7 @@ public class PU {
 
 		String[] sents = sInput.trim().split("[。 ！ ？]"); // 对输入文本按中文标点符号句号、感汉号、问号分句。
 		for(int i = 0; i < sents.length; i++) {
+			sents[i] = sents[i].trim();
 			if(!sents[i].equals("")) {
 				sents[i] = nlpir.multProcess(sents[i]); // 对每个句子用张华平分词工具进行分词、去掉词性标注、去停用词。
 			}
@@ -100,7 +107,7 @@ public class PU {
 				Thread.sleep(1000);
 			}
 			if(resultFile.exists()) {
-				String classifyResult = count(resultFile); // 根据svm_classify.exe处理结果，整理返回信息。
+				String classifyResult = count(resultFile, sents); // 根据svm_classify.exe处理结果，整理返回信息。
 				return classifyResult;
 			}
 			else {
