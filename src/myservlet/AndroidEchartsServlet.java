@@ -29,6 +29,7 @@ public class AndroidEchartsServlet extends HttpServlet {
 	private String negSents;
 	private String myId;
 	private ArrayList<String> transEResult;
+	private String[] pos_sents;
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -119,7 +120,13 @@ public class AndroidEchartsServlet extends HttpServlet {
 						break;
 					case "getReport":
 						transEResult = (ArrayList<String>) session.getAttribute("transEResult");
-						out.println( new Report(transEResult).getReport() );
+						pos_sents = (String[]) session.getAttribute("pos_sents");
+						if (transEResult == null) {
+							out.println("null");
+						}
+						else {
+							out.println( new Report(transEResult, pos_sents).getReport() );
+						}
 						break;
 					default:
 						break;

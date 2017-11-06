@@ -43,7 +43,7 @@ public class TransEServlet extends HttpServlet {
 			sents = request.getParameter("sents"); // 获取参数。用户输入的文本。
 			myId = request.getParameter("myId");
 			if (sents == null) {
-				//
+				out.print(new String("ERROR|no data!"));
 			}
 			else {
 				HttpSession session = MySessionContext.getSession(myId);
@@ -56,8 +56,11 @@ public class TransEServlet extends HttpServlet {
 				else {
 					System.out.println("[TransEServlet]SessionId: " + session.getId());
 					TransE transETool = new TransE(); // 初始化TransE算法模型工具类对象
-					ArrayList<String> transEResult = transETool.process(sents); // 调用TransE算法模型对输入文本做细粒度分析。
+					String[] pos_sents = sents.split("。");
+					ArrayList<String> transEResult = transETool.process(pos_sents); // 调用TransE算法模型对输入文本做细粒度分析。
 					if(transEResult == null) {
+						session.setAttribute("resultFromTransE", "null");
+						session.setAttribute("transEResult", null);
 						out.print(new String("ERROR|no data!")); // TransE处理结果为空字符串，返回没有信息。
 					}
 					else {
@@ -68,6 +71,7 @@ public class TransEServlet extends HttpServlet {
 
 						session.setAttribute("resultFromTransE", returnData);
 						session.setAttribute("transEResult", transEResult);
+						session.setAttribute("pos_sents", pos_sents);
 //						PublicVariable.resultFromTransE = returnData;
 						out.print(returnData); // 返回处理结果。
 					}

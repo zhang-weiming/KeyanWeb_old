@@ -2,7 +2,9 @@
 package myjavabean.transe;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 import java.lang.Math;
 import java.io.*;
 import myjavabean.nlp.NlpirTest;
@@ -150,11 +152,11 @@ public class TransE {
 		}
 		return null;
 	}
-    public ArrayList<String> process(String sInput) {
+    public ArrayList<String> process(String[] sInput) {
         int n = VECTOR_N;		// 嵌入维数
 		int margin = MARGIN;	// 阈值
 		
-		String[] pos_sents = sInput.split("。"); // 将输入文本按中文标点符号句号、感叹号、问号分句。
+		String[] pos_sents = sInput; // 将输入文本按中文标点符号句号、感叹号、问号分句。
 //		System.out.println("[TransE]");
 //		for (String sent : pos_sents) {
 //			System.out.println(sent);
@@ -194,6 +196,7 @@ public class TransE {
 								flag = true;
 								mList.add(entity.get(i) + " " + entity.get(j)); // 收集符合阈值规则的头尾实体元组。
 //								System.out.println(entity.get(i) + ", " + entity.get(j) + " " + dist + " / " + MARGIN); // 服务器端输出提示 该头尾实体文本及之间的曼哈顿距离。
+								System.out.println(entity.get(i) + ", " + entity.get(j));
 							}
 						}
 					} // for
@@ -220,16 +223,17 @@ public class TransE {
     }
 	public ArrayList<String> getNoun(String sent) { // 通过张华平分词工具，获取一个句子中的所有名词
 		NlpirTest nlpir = new NlpirTest(); // 初始化张华平分词工具类对象。
-		ArrayList<String> list = new ArrayList<String>();
-		list.clear();
+//		ArrayList<String> list = new ArrayList<String>();
+//		list.clear();
+		Set<String> set = new HashSet<String>();
 		sent = nlpir.segment(sent);
 		String[] words = sent.split(" ");
 		for(String w :words) {
 			if(!w.equals("") && w.contains("/n"))
-				list.add(nlpir.modify(w));
+				set.add(nlpir.modify(w));
 		}
 		nlpir.exit(); // 销毁张华平分词工具类对象。
-		return list;
+		return new ArrayList<String>(set);
 	}
 	public HashMap<String, String> loadWordLibMap(String wordLibPath) { // 加载 词库映射关系。
 		try {
