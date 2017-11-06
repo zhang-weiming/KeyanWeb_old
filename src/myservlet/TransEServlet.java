@@ -50,22 +50,27 @@ public class TransEServlet extends HttpServlet {
 				if (session == null) {
 					session = request.getSession(false);
 				}
-				System.out.println("[TransEServlet]SessionId: " + session.getId());
-				TransE transETool = new TransE(); // 初始化TransE算法模型工具类对象
-				ArrayList<String> transEResult = transETool.process(sents); // 调用TransE算法模型对输入文本做细粒度分析。
-				if(transEResult == null) {
-					out.print(new String("ERROR|no data!")); // TransE处理结果为空字符串，返回没有信息。
+				if (session == null) {
+					out.print(new String("ERROR|no data!"));
 				}
 				else {
-					String returnData = transEResult.get(0); // 整理返回信息文本。
-					for(int i = 1; i < transEResult.size(); i++) {
-						returnData += "|" + transEResult.get(i);
+					System.out.println("[TransEServlet]SessionId: " + session.getId());
+					TransE transETool = new TransE(); // 初始化TransE算法模型工具类对象
+					ArrayList<String> transEResult = transETool.process(sents); // 调用TransE算法模型对输入文本做细粒度分析。
+					if(transEResult == null) {
+						out.print(new String("ERROR|no data!")); // TransE处理结果为空字符串，返回没有信息。
 					}
+					else {
+						String returnData = transEResult.get(0); // 整理返回信息文本。
+						for(int i = 1; i < transEResult.size(); i++) {
+							returnData += "|" + transEResult.get(i);
+						}
 
-					session.setAttribute("resultFromTransE", returnData);
-					session.setAttribute("transEResult", transEResult);
-//					PublicVariable.resultFromTransE = returnData;
-					out.print(returnData); // 返回处理结果。
+						session.setAttribute("resultFromTransE", returnData);
+						session.setAttribute("transEResult", transEResult);
+//						PublicVariable.resultFromTransE = returnData;
+						out.print(returnData); // 返回处理结果。
+					}
 				}
 			}
 //			String[] positions = positionsPara.trim().split(" "); // 获取参数

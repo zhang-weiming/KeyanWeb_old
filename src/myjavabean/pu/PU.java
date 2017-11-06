@@ -48,10 +48,19 @@ public class PU {
 					}
 					sentId++;
 				}
-				System.out.println("PU finished...");
-				System.out.println("\tPos: " + posCounter + ", Neg: " + negCounter);
-				System.out.println("\tPos: " + pos_positions.trim() + ", Neg: " + neg_positions.trim());
-				return posCounter + " " + negCounter + "|" + pos_positions.trim() + "|" + neg_positions.trim();
+				pos_positions = pos_positions.trim();
+				neg_positions = neg_positions.trim();
+				if (pos_positions.equals("")) {
+					pos_positions = "null";
+				}
+				if (neg_positions.equals("")) {
+					neg_positions = "null";
+				}
+//				System.out.println("\tPos: " + posCounter + ", Neg: " + negCounter);
+//				System.out.println("\tPos: " + pos_positions.trim() + ", Neg: " + neg_positions.trim());
+				String returnData = posCounter + " " + negCounter + "|" + pos_positions + "|" + neg_positions;
+				System.out.println("PU finished. return: " + returnData);
+				return returnData;
 			}
 			else 
 			{

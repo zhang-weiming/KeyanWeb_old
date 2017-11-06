@@ -220,7 +220,11 @@ public class Report {
 			}
 		}
 //		if (reportContent.endsWith("此外")) reportContent += "。";
-		reportContent += "。" + getTailStmt(); //"希望厂家重视消费者的诉求，提高产品竞争力。";
+		try {
+			reportContent += "。" + new String(getTailStmt().getBytes(), "UTF-8");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return reportContent;
 	}
 
@@ -278,7 +282,11 @@ public class Report {
 				reportContent += "，" + saleDiscussion;
 			}
 		}
-		reportContent += "。" + getTailStmt(); //"希望厂家重视消费者的诉求，提高产品竞争力。";
+		try {
+			reportContent += "。" + new String(getTailStmt().getBytes(), "UTF-8");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return reportContent;
 	}
 
@@ -336,7 +344,11 @@ public class Report {
 				reportContent += "，" + saleDiscussion;
 			}
 		}
-		reportContent += "。" + getTailStmt(); //"希望厂家重视消费者的诉求，提高产品竞争力。";
+		try {
+			reportContent += "。" + new String(getTailStmt().getBytes(), "UTF-8");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return reportContent;
 	}
 
@@ -394,7 +406,11 @@ public class Report {
 				reportContent += "，" + saleDiscussion;
 			}
 		}
-		reportContent += "。" + getTailStmt(); //"希望厂家重视消费者的诉求，提高产品竞争力。";
+		try {
+			reportContent += "。" + new String(getTailStmt().getBytes(), "UTF-8");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return reportContent;
 	}
 	

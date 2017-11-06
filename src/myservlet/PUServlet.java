@@ -64,12 +64,13 @@ public class PUServlet extends HttpServlet {
 				System.out.println("[PUServlet] SessionId: " + session.getId());
 				
 				session.setAttribute("sents", sents);
-				session.setAttribute("resultFromPU", classifyResult);
 				if(classifyResult != null) {
+					session.setAttribute("resultFromPU", classifyResult);
 					out.print(classifyResult); // 返回处理结果。格式：正例个数 负例个数|[正例在句子数组中的索引值...，以一个空格间隔] （例如：5 3|0 2 3 5 7）
 				}
 				else 
 				{
+					session.setAttribute("resultFromPU", "null");
 					out.print("null"); // 处理结果为空
 				}
 			}

@@ -54,11 +54,9 @@ public class AndroidEchartsServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		try {
-//			System.out.println("pie.html发送请求");
 			postReason = request.getParameter("postReason").trim();
 			myId = request.getParameter("myId").trim();
 			HttpSession session = MySessionContext.getSession(myId);
-//			HttpSession session = request.getSession(false);
 			if (session == null) {
 				session = request.getSession(false);
 			}
@@ -70,14 +68,15 @@ public class AndroidEchartsServlet extends HttpServlet {
 			else {
 				System.out.println("[AndroidEchartsServlet-" + postReason + "]找到session: " + session.getId());
 				sents = (String) session.getAttribute("sents");
-				resultFromPU = (String) session.getAttribute("resultFromPU");
-				resultFromTransE = (String) session.getAttribute("resultFromTransE");
+				resultFromPU = ((String) session.getAttribute("resultFromPU")).trim();
+				resultFromTransE = ((String) session.getAttribute("resultFromTransE")).trim();
 //				sents = PublicVariable.sents;
 //				resultFromPU = PublicVariable.resultFromPU;
 //				resultFromTransE = PublicVariable.resultFromTransE;
 
 				String[] parts = resultFromPU.split("\\|");
-				if (parts.length > 1) {
+//				System.out.println(parts.length);
+				if (!resultFromPU.equals("null")) {
 					pos_position = parts[1].trim();
 					neg_position = parts[2].trim();
 				}
@@ -94,17 +93,27 @@ public class AndroidEchartsServlet extends HttpServlet {
 						break;
 					case "getPos":
 						posSents = "";
-						String[] pos_positions = pos_position.split(" ");
-						for (String p : pos_positions) {
-							posSents += sentsArr[ Integer.parseInt(p) ] + "。";
+						if (pos_position.equals("null")) {
+							pos_position = "无";
+						}
+						else {
+							String[] pos_positions = pos_position.split(" ");
+							for (String p : pos_positions) {
+								posSents += sentsArr[ Integer.parseInt(p) ] + "。";
+							}
 						}
 						out.println(posSents);
 						break;
 					case "getNeg":
 						negSents = "";
-						String[] neg_positions = neg_position.split(" ");
-						for (String p : neg_positions) {
-							negSents += sentsArr[ Integer.parseInt(p) ] + "。";
+						if (neg_position.equals("null")) {
+							negSents = "无";
+						}
+						else {
+							String[] neg_positions = neg_position.split(" ");
+							for (String p : neg_positions) {
+								negSents += sentsArr[ Integer.parseInt(p) ] + "。";
+							}
 						}
 						out.println(negSents);
 						break;
