@@ -26,7 +26,7 @@ public class SignInServlet extends HttpServlet {
 	private String uemailaddress;
 	private String upassword;
 	
-	private String postReason;
+	private String postreason;
 	private DBHelper dbHelper;
        
     /**
@@ -37,7 +37,7 @@ public class SignInServlet extends HttpServlet {
 
         uemailaddress = "";
         upassword = "";
-        postReason = null;
+        postreason = null;
         dbHelper = new DBHelper();
     }
 
@@ -52,8 +52,8 @@ public class SignInServlet extends HttpServlet {
 		System.out.println("登录请求接收");
 		
 		try {
-			postReason = request.getParameter("postreason").trim();
-			switch (postReason) {
+			postreason = request.getParameter("postreason").trim();
+			switch (postreason) {
 				case "SignInNormally": // 正常登录
 					uemailaddress = request.getParameter("uemailaddress");
 					upassword = request.getParameter("upassword");
@@ -90,7 +90,7 @@ public class SignInServlet extends HttpServlet {
 		//									}
 		//								}
 										
-										out.println("success");
+										out.println(session.getId());
 									}
 									// 密码不匹配，不允许登录
 									else {
@@ -136,10 +136,11 @@ public class SignInServlet extends HttpServlet {
 		
 				default:
 			}
-			dbHelper.close();
 		} catch (Exception e) {
 			System.out.println("[SignIn]Error-Unknown");
 			e.printStackTrace();
+		} finally {
+			dbHelper.close();
 		}
 	}
 
