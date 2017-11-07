@@ -99,9 +99,18 @@ function showpie(place, data, myId)
 				myChart2.resize();
             });
             
+            var last_time = 0;
+            var current_time = new Date().getSeconds;
             myChart2.on('click', function(params){
                 // window.location.href = encodeURIComponent(params.name) + '.html';
-                window.open(encodeURIComponent(params.name) + '.html?myId=' + myId);
+                current_time = new Date().getSeconds;
+                if ((current_time - last_time) > 2) {
+                    last_time = current_time;
+                }
+                else {
+                    last_time = current_time;
+                    window.open(encodeURIComponent(params.name) + '.html?myId=' + myId);
+                }
             });
         }
     );

@@ -17,8 +17,8 @@ public class Report {
 	private String[] pos_sents;
 //	private HashMap<String, String> map;
 //	private String reportContent;
-	private String[] adj1; // 大规模的评价词
-//	private String[] adj2; // 差强人意|表现一般
+	private String[] adj1; // 大规模的评价词用于第一段
+	private String[] adj2; // 用于第二段
 	private String[] cleanDiscussionAdj; // 保养/维护费用 不低|高
 	private String[] costPerformanceAdj; // 性价比 不高|低
 	private String[] headStmts;
@@ -38,8 +38,19 @@ public class Report {
 				"有待提升", 
 				"有待改善", 
 				"尚需改进",
-				"差强人意",
-				"表现一般"
+				"表现差强人意",
+				"表现比较一般"
+		};
+		adj2 = new String[] {
+				"等方面也存在问题", 
+				"等方面也略显不足", 
+				"也有上升空间", 
+				"等方面也有待完善", 
+				"也有待提升", 
+				"也有待改善", 
+				"也尚需改进",
+				"表现也差强人意",
+				"表现也比较一般"
 		};
 //		adj2 = new String[] {
 //				"差强人意",
@@ -76,8 +87,8 @@ public class Report {
 		dbHelper = new DBHelper();
 	}
 	
-	public String getReport() {
-		Map<String, ArrayList<String>> tempMap = new HashMap<String, ArrayList<String>>();
+	public String getReport() { // 入口
+		Map<String, ArrayList<String>> tempMap = new HashMap<String, ArrayList<String>>(); // 品牌和所有属性的映射
 		for (int i = 0; i < data.size(); i++) {
 			String[] parts = data.get(i).split(" ");
 			String head = parts[0];
@@ -94,14 +105,14 @@ public class Report {
 				tempMap.put(head, tempList);
 //				System.out.println("[false]" + head + " " + tempList);
 			}
-		}
-		String returnData = "";
-		for (String key : tempMap.keySet()) {
+		} // 品牌和所有属性的映射
+		String reportContent = ""; // 整理报告
+		for (String key : tempMap.keySet()) { // 遍历所有品牌词
 			if (carTypeList.data.contains(key.trim())) {
-				ArrayList<String> tempList = tempMap.get(key);
-				System.out.println(key + " " + tempList);
+				ArrayList<String> tempList = tempMap.get(key); // 品牌词key对应的属性集
+				System.out.println("\t" + key + " " + tempList);
 				String carItemStr = key + "&&"; // carType
-				String pos_sent = getSentWithShorting(tempList); // shorting
+				String pos_sent = getSentWithShorting(key); // shorting
 				if (pos_sent == null) {
 					carItemStr += tempList.get(0); // shorting
 					for (int i = 1; i < tempList.size(); i++) {
@@ -112,18 +123,35 @@ public class Report {
 					carItemStr += pos_sent;
 				} // shorting
 				CarItem carItem = new CarItem(); // summary
-				carItem.carType = key;
-				carItem.shortings = tempList;
+				carItem.setCarType(key);
+				carItem.setShortings(tempList);
 				carItemStr += "&&" + getSummary(carItem); // summary
-				returnData += carItemStr + "|";
+				reportContent += carItemStr + "|";
 //				tempMap.remove(key);
 			}
 		}
-		if (returnData.equals("")) {
+		if (reportContent.equals("")) { // 没有生成报告
 			return "null";
 		}
 		else {
-			return returnData.substring(0, returnData.length() - 1);
+			return reportContent.substring(0, reportContent.length() - 1);
+		} // 整理报告
+	}
+
+	public String getSentWithShorting(String carType) {
+		String sentNeeded = "";
+		boolean getIt = false;
+		for (String sent : this.pos_sents) {
+			if (sent.contains(carType)) {
+				getIt = true;
+				sentNeeded += sent + "。";
+			}
+		}
+		if (getIt) {
+			return sentNeeded;
+		}
+		else {
+			return null;
 		}
 	}
 	
@@ -143,29 +171,22 @@ public class Report {
 		return null;
 	}
 
-	// 报告总结
-	public String getSummary(CarItem carItem) {
-//		System.out.println("11111");
-//		Map<String, String> map = new HashMap<String, String>();
-		Set<String> cSet = new HashSet<String>();
+	public String getSummary(CarItem carItem) { // 报告总结
+		Set<String> cSet = new HashSet<String>(); // 属性集合 （使用Set以便去重）
 		String selectSql = null;
-		for (int i = 0; i < carItem.shortings.size(); i++) { // 遍历所有元组
-//			System.out.println("22222");
-			String shorting = carItem.shortings.get(i);
+		for (int i = 0; i < carItem.getShortings().size(); i++) { // 遍历所有属性
+			String shorting = carItem.getShortings().get(i); // 查询所有属性词的归类
 			selectSql = "select * from report_info "
 					+ "where object='" + shorting.trim() + "';";
 			dbHelper.init();
 			ResultSet rs = dbHelper.selectSql(selectSql);
-//			System.out.println("33333");
 			try {
 				if (rs.next()) {
-//					System.out.println("44444");
 					String c = rs.getString(3).trim(); // classification
 					while (true) {
 						selectSql = "select * from report_info "
 								+ "where object='" + c + "';";
 						rs = dbHelper.selectSql(selectSql);
-//						System.out.println("55555");
 						if (rs.next()) {
 							if (rs.getString(3).trim().equals(c)) { // 跳出循环，不再继续查询
 								break;
@@ -179,43 +200,44 @@ public class Report {
 						}
 					}
 					cSet.add(c);
-//					if (map.containsKey(c)) {
-//						map.put(c, map.get(c) + "|" + parts[0]);
-//						this.map.put(c, map.get(c) + "|" + parts[0]);
-//					}
-//					else {
-//						map.put(c, parts[0]);
-//						this.map.put(c, parts[0]);
-//					}
-//					break; // 结束对该词的查询
 				} // 没有查询结果则放弃该元组，继续处理下一个元组（下一次for循环）
-				rs.close();
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
+			} finally {
+				try {
+					rs.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}// 查询所有属性词的归类
 		}
 		dbHelper.close();
-		if (cSet.contains("保养/维护")) {
-			carItem.hasClean = true;
-			carItem.cleanObject = carItem.carType + "的成本";
+		if (cSet.contains("保养/维护")) { // 处理四个特殊属性
+			carItem.setHasClean(true);
 			cSet.remove("保养/维护");
-			carItem.cleanDiscussion = cleanDiscussionAdj[ (int) (Math.random() * 4) ];
+			carItem.shortings.remove("保养/维护");
+			carItem.setCleanDiscussion(cleanDiscussionAdj[ (int) (Math.random() * 4) ] + "增加了" + carItem.getCarType() + "的成本");
+			System.out.println("\t" + carItem.getCleanDiscussion());
 		}
-		if (cSet.contains("销量")) {
-			carItem.hasClean = true;
+		if (cSet.contains("销量")) { // 报告用语固定
+			carItem.hasSale = true;
 			cSet.remove("销量");
+			carItem.shortings.remove("销量");
+			System.out.println("\t" + carItem.saleDiscussion);
 		}
-		if (cSet.contains("价格")) {
+		if (cSet.contains("价格")) { // 报告用语固定
 			carItem.hasPrice = true;
 			cSet.remove("价格");
+			carItem.shortings.remove("价格");
 		}
 		if (cSet.contains("性价比")) {
 			carItem.hasCostP= true;
 			cSet.remove("性价比");
+			carItem.shortings.remove("性价比");
 			carItem.costPerformance = costPerformanceAdj[ (int) (Math.random() * 2) ];
-		}
+		} // 处理四个特殊属性
 		carItem.cList.addAll(cSet);
-		System.out.println("[Report] " + cSet);
+		System.out.println("[Report-cSet] " + cSet);
 //		switch ( (int) (Math.random() * 4) ) { // 四个模板：主要是开头不同，结尾采用随机挑选。
 //			case 0:
 //				return buildReport1(carItem);
@@ -227,406 +249,62 @@ public class Report {
 //				return buildReport4(carItem);
 //			default:
 //		}
-		return buildReport(carItem);
-//		return null;
+		String summary = buildSummaryContent(carItem);
+		return summary;
 	}
 
-	private String buildReport(CarItem carItem) {
-		List<String> list = carItem.cList;
-		if (list.isEmpty()) {
+	private String buildSummaryContent(CarItem carItem) {
+		List<String> list = carItem.cList; // 所有属性词的归类（不重复）
+		if (list.isEmpty()) { // 没有归类信息，则直接使用原属性词
+			System.out.println("yes");
 			list = carItem.shortings;
 		}
-//		String reportContent = "通过分析发现，" + carItem.carType; // 第一段开始
-		String reportContent = this.headStmts[ (int) (Math.random() * 4) ] + carItem.carType; // 第一段开始
-		reportContent += "的" + list.get(0);
+		String summary = this.headStmts[ (int) (Math.random() * 4) ] + carItem.carType; // 第一段开始
+		summary += "的" + list.get(0);
 		int splitIndex = list.size() * 2 / 3;
 		for (int i = 1; i < splitIndex; i++) {
-			reportContent += "、" + list.get(i);
+			summary += "、" + list.get(i);
 		}
 		int firstIndex = (int) (Math.random() * adj1.length); // 第一段的评价词
-		reportContent += adj1[ firstIndex ]; // 第一段的评价词
+		summary += adj1[ firstIndex ]; // 第一段的评价词
 		if (list.size() > 1) {
-			reportContent += "，" + list.get(splitIndex); // 第二段开始
+			summary += "，" + list.get(splitIndex); // 第二段开始
 			for (int i = splitIndex + 1; i < list.size(); i++) {
-				reportContent += "、" + list.get(i);
+				summary += "、" + list.get(i);
 			}
 			int secondIndex = (int) (Math.random() * adj1.length); // 第二段的评价词
 			while (secondIndex == firstIndex) {
 				secondIndex = (int) (Math.random() * adj1.length);
 			}
-			reportContent += "也" + adj1[ secondIndex ]; // 第二段的评价词
-		}
-		else {
-//			reportContent += "。";
+			summary += adj2[ secondIndex ]; // 第二段的评价词
 		}
 		if (carItem.hasClean || carItem.hasPrice || carItem.hasCostP || carItem.hasSale) {
-			reportContent += "。此外";
+//			System.out.println("\t[catItem.cList]" + carItem.cList);
+			summary += "。此外";
 			if (carItem.hasClean) {
-				reportContent += "，" + carItem.cleanDiscussion + carItem.cleanObject;
+				summary += "，" + carItem.cleanDiscussion;
+				System.out.println("[clean]\t" + carItem.cleanDiscussion);
 			}
 			if (carItem.hasPrice) {
-				carItem.reportContent += "，" + carItem.priceDiscussion;
+				summary += "，" + carItem.priceDiscussion;
+				System.out.println("[price]\t" + carItem.priceDiscussion);
 			}
 			if (carItem.hasCostP) {
-				carItem.reportContent += "，" + carItem.costPerformance;
+				summary += "，" + carItem.costPerformance;
+				System.out.println("[cost]\t" + carItem.costPerformance);
 			}
 			if (carItem.hasSale) {
-				carItem.reportContent += "，" + carItem.saleDiscussion;
+				summary += "，" + carItem.saleDiscussion;
+				System.out.println("[sale]\t" + carItem.saleDiscussion);
 			}
 		}
 		try {
-			reportContent += "。" + getTailStmt();
+			summary += "。" + getTailStmt();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return reportContent;
+		return summary;
 	}
-
-	/*
-	// 报告总结
-	public String getSummary(ArrayList<String> data) {
-//		System.out.println("11111");
-		String reportContent = null;
-		Map<String, String> map = new HashMap<String, String>();
-		String selectSql = null;
-		for (int i = 0; i < data.size(); i++) { // 遍历所有元组
-//			System.out.println("22222");
-			String[] parts = data.get(i).split(" ");
-			selectSql = "select * from report_info "
-					+ "where object='" + parts[1].trim() + "';";
-			dbHelper.init();
-			ResultSet rs = dbHelper.selectSql(selectSql);
-//			System.out.println("33333");
-			try {
-				if (rs.next()) {
-//					System.out.println("44444");
-					String c = rs.getString(3).trim(); // classification
-					while (true) {
-						selectSql = "select * from report_info "
-								+ "where object='" + c + "';";
-						rs = dbHelper.selectSql(selectSql);
-//						System.out.println("55555");
-						if (rs.next()) {
-							if (rs.getString(3).trim().equals(c)) { // 跳出循环，不再继续查询
-								break;
-							}
-							else {
-								c = rs.getString(3).trim();
-							}
-						}
-						else { // 没有查询结果，不再继续查询
-							break;
-						}
-					}
-					if (map.containsKey(c)) {
-						map.put(c, map.get(c) + "|" + parts[0]);
-						this.map.put(c, map.get(c) + "|" + parts[0]);
-					}
-					else {
-						map.put(c, parts[0]);
-						this.map.put(c, parts[0]);
-					}
-					break; // 结束对该词的查询
-				} // 没有查询结果则放弃该元组，继续处理下一个元组（下一次for循环）
-				rs.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		if (map.containsKey("保养/维护")) {
-			hasClean = true;
-			cleanObject = map.get("保养/维护") + "的成本";
-			map.remove("保养/维护");
-			cleanDiscussion = cleanDiscussionAdj[ (int) (Math.random() * 4) ];
-		}
-		if (map.containsKey("销量")) {
-			hasClean = true;
-			map.remove("销量");
-		}
-		if (map.containsKey("价格")) {
-			hasPrice = true;
-			map.remove("价格");
-		}
-		if (map.containsKey("性价比")) {
-			hasCostP= true;
-			map.remove("性价比");
-			costPerformance = costPerformanceAdj[ (int) (Math.random() * 2) ];
-		}
-		ArrayList<String> list = new ArrayList<String>();
-		list.addAll(map.keySet());
-//		System.out.println("[Report] " + map.keySet());
-		switch ( (int) (Math.random() * 4) ) { // 四个模板：主要是开头不同，结尾采用随机挑选。
-			case 0:
-				reportContent = buildReport1(list);
-				break;
-			case 1:
-				reportContent = buildReport2(list);
-				break;
-			case 2:
-				reportContent = buildReport3(list);
-				break;
-			case 3:
-				reportContent = buildReport4(list);
-				break;
-			default:
-				break;
-		}
-		dbHelper.close();
-		return reportContent;
-	}
-
-	private String buildReport1(ArrayList<String> list) {
-		String reportContent = "通过分析发现，"; // 第一段开始
-		String[] tempHeads = map.get( list.get(0) ).split("\\|");
-		for (String h : tempHeads) {
-			reportContent += h + "、";
-		}
-		reportContent = reportContent.substring(0, reportContent.length() - 1) + "的" + list.get(0);
-		int splitIndex = list.size() * 2 / 3;
-		for (int i = 1; i < splitIndex; i++) {
-			String tail = list.get(i);
-			String[] heads = map.get(tail).split("\\|");
-			for (String h : heads) {
-				reportContent += h + "、";
-			}
-			reportContent = reportContent.substring(0, reportContent.length() - 1) + "的" + tail;
-		}
-		int firstIndex = (int) (Math.random() * adj1.length); // 第一段的评价词
-		reportContent += adj1[ firstIndex ]; // 第一段的评价词
-		if (list.size() > 1) {
-			reportContent += "，";
-			tempHeads = map.get( list.get(splitIndex) ).split("\\|");
-			for (String h : tempHeads) {
-				reportContent += h + "、";
-			}
-			reportContent = reportContent.substring(0, reportContent.length() - 1) + "的" + list.get(splitIndex); // 第二段开始
-			for (int i = splitIndex + 1; i < list.size(); i++) {
-				String tail = list.get(i);
-				String[] heads = map.get(tail).split("\\|");
-				for (String h : heads) {
-					reportContent += h + "、";
-				}
-				reportContent = reportContent.substring(0, reportContent.length() - 1) + "的" + tail;
-			}
-			int secondIndex = (int) (Math.random() * adj1.length);
-			while (secondIndex == firstIndex) {
-				secondIndex = (int) (Math.random() * adj1.length);
-			}
-			reportContent += "也" + adj1[ secondIndex ] + "。"; // 第二段的评价词
-		}
-		else {
-//			reportContent += "。";
-		}
-		if (hasClean || hasPrice || hasCostP || hasSale) {
-			reportContent += "。此外";
-			if (hasClean) {
-				reportContent += "，" + cleanDiscussion + cleanObject;
-			}
-			if (hasPrice) {
-				reportContent += "，" + priceDiscussion;
-			}
-			if (hasCostP) {
-				reportContent += "，" + costPerformance;
-			}
-			if (hasSale) {
-				reportContent += "，" + saleDiscussion;
-			}
-		}
-//		if (reportContent.endsWith("此外")) reportContent += "。";
-		try {
-			reportContent += "。" + getTailStmt();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return reportContent;
-	}
-
-	private String buildReport2(ArrayList<String> list) {
-		String reportContent = "从一部分质量问题反馈来看，用户认为"; // 第一段开始
-		String[] tempHeads = map.get( list.get(0) ).split("\\|");
-		for (String h : tempHeads) {
-			reportContent += h + "、";
-		}
-		reportContent = reportContent.substring(0, reportContent.length() - 1) + "的" + list.get(0);
-		int splitIndex = list.size() * 2 / 3;
-		for (int i = 1; i < splitIndex; i++) {
-			String tail = list.get(i);
-			String[] heads = map.get(tail).split("\\|");
-			for (String h : heads) {
-				reportContent += h + "、";
-			}
-			reportContent = reportContent.substring(0, reportContent.length() - 1) + "的" + tail;
-		}
-		int firstIndex = (int) (Math.random() * adj1.length); // 第一段的评价词
-		reportContent += adj1[ firstIndex ]; // 第一段的评价词
-		if (list.size() > 1) {
-			reportContent += "，";
-			tempHeads = map.get( list.get(splitIndex) ).split("\\|");
-			for (String h : tempHeads) {
-				reportContent += h + "、";
-			}
-			reportContent = reportContent.substring(0, reportContent.length() - 1) + "的" + list.get(splitIndex); // 第二段开始
-			for (int i = splitIndex + 1; i < list.size(); i++) {
-				String tail = list.get(i);
-				String[] heads = map.get(tail).split("\\|");
-				for (String h : heads) {
-					reportContent += h + "、";
-				}
-				reportContent = reportContent.substring(0, reportContent.length() - 1) + "的" + tail;
-			}
-			int secondIndex = (int) (Math.random() * adj1.length);
-			while (secondIndex == firstIndex) {
-				secondIndex = (int) (Math.random() * adj1.length);
-			}
-			reportContent += "也" + adj1[ secondIndex ] + "。"; // 第二段的评价词
-		}
-		if (hasClean || hasPrice || hasCostP || hasSale) {
-			reportContent += "。此外";
-			if (hasClean) {
-				reportContent += "，" + cleanDiscussion + cleanObject;
-			}
-			if (hasPrice) {
-				reportContent += "，" + priceDiscussion;
-			}
-			if (hasCostP) {
-				reportContent += "，" + costPerformance;
-			}
-			if (hasSale) {
-				reportContent += "，" + saleDiscussion;
-			}
-		}
-		try {
-			reportContent += "。" + getTailStmt();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return reportContent;
-	}
-
-	private String buildReport3(ArrayList<String> list) {
-		String reportContent = "从本软件目前收到的信息情况来看，部分车主认为"; // 第一段开始
-		String[] tempHeads = map.get( list.get(0) ).split("\\|");
-		for (String h : tempHeads) {
-			reportContent += h + "、";
-		}
-		reportContent = reportContent.substring(0, reportContent.length() - 1) + "的" + list.get(0);
-		int splitIndex = list.size() * 2 / 3;
-		for (int i = 1; i < splitIndex; i++) {
-			String tail = list.get(i);
-			String[] heads = map.get(tail).split("\\|");
-			for (String h : heads) {
-				reportContent += h + "、";
-			}
-			reportContent = reportContent.substring(0, reportContent.length() - 1) + "的" + tail;
-		}
-		int firstIndex = (int) (Math.random() * adj1.length); // 第一段的评价词
-		reportContent += adj1[ firstIndex ]; // 第一段的评价词
-		if (list.size() > 1) {
-			reportContent += "，";
-			tempHeads = map.get( list.get(splitIndex) ).split("\\|");
-			for (String h : tempHeads) {
-				reportContent += h + "、";
-			}
-			reportContent = reportContent.substring(0, reportContent.length() - 1) + "的" + list.get(splitIndex); // 第二段开始
-			for (int i = splitIndex + 1; i < list.size(); i++) {
-				String tail = list.get(i);
-				String[] heads = map.get(tail).split("\\|");
-				for (String h : heads) {
-					reportContent += h + "、";
-				}
-				reportContent = reportContent.substring(0, reportContent.length() - 1) + "的" + tail;
-			}
-			int secondIndex = (int) (Math.random() * adj1.length);
-			while (secondIndex == firstIndex) {
-				secondIndex = (int) (Math.random() * adj1.length);
-			}
-			reportContent += "也" + adj1[ secondIndex ] + "。"; // 第二段的评价词
-		}
-		if (hasClean || hasPrice || hasCostP || hasSale) {
-			reportContent += "。此外";
-			if (hasClean) {
-				reportContent += "，" + cleanDiscussion + cleanObject;
-			}
-			if (hasPrice) {
-				reportContent += "，" + priceDiscussion;
-			}
-			if (hasCostP) {
-				reportContent += "，" + costPerformance;
-			}
-			if (hasSale) {
-				reportContent += "，" + saleDiscussion;
-			}
-		}
-		try {
-			reportContent += "。" + getTailStmt();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return reportContent;
-	}
-
-	private String buildReport4(ArrayList<String> list) {
-		String reportContent = "车无完车，不少车主反馈"; // 第一段开始
-		String[] tempHeads = map.get( list.get(0) ).split("\\|");
-		for (String h : tempHeads) {
-			reportContent += h + "、";
-		}
-		reportContent = reportContent.substring(0, reportContent.length() - 1) + "的" + list.get(0);
-		int splitIndex = list.size() * 2 / 3;
-		for (int i = 1; i < splitIndex; i++) {
-			String tail = list.get(i);
-			String[] heads = map.get(tail).split("\\|");
-			for (String h : heads) {
-				reportContent += h + "、";
-			}
-			reportContent = reportContent.substring(0, reportContent.length() - 1) + "的" + tail;
-		}
-		int firstIndex = (int) (Math.random() * adj1.length); // 第一段的评价词
-		reportContent += adj1[ firstIndex ]; // 第一段的评价词
-		if (list.size() > 1) {
-			reportContent += "，";
-			tempHeads = map.get( list.get(splitIndex) ).split("\\|");
-			for (String h : tempHeads) {
-				reportContent += h + "、";
-			}
-			reportContent = reportContent.substring(0, reportContent.length() - 1) + "的" + list.get(splitIndex); // 第二段开始
-			for (int i = splitIndex + 1; i < list.size(); i++) {
-				String tail = list.get(i);
-				String[] heads = map.get(tail).split("\\|");
-				for (String h : heads) {
-					reportContent += h + "、";
-				}
-				reportContent = reportContent.substring(0, reportContent.length() - 1) + "的" + tail;
-			}
-			int secondIndex = (int) (Math.random() * adj1.length);
-			while (secondIndex == firstIndex) {
-				secondIndex = (int) (Math.random() * adj1.length);
-			}
-			reportContent += "也" + adj1[ secondIndex ] + "。"; // 第二段的评价词
-		}
-		if (hasClean || hasPrice || hasCostP || hasSale) {
-			reportContent += "。此外";
-			if (hasClean) {
-				reportContent += "，" + cleanDiscussion + cleanObject;
-			}
-			if (hasPrice) {
-				reportContent += "，" + priceDiscussion;
-			}
-			if (hasCostP) {
-				reportContent += "，" + costPerformance;
-			}
-			if (hasSale) {
-				reportContent += "，" + saleDiscussion;
-			}
-		}
-		try {
-			reportContent += "。" + getTailStmt();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return reportContent;
-	}
-	*/
 	
 	private String getTailStmt() {
 		return tailStmts[ (int) (Math.random() * tailStmts.length) ];
@@ -634,28 +312,24 @@ public class Report {
 	
 	public class CarItem {
 		public String carType;
-		public String shorting;
-		public String summary;
-		
-		public String reportContent;
 		public ArrayList<String> shortings;
 		public ArrayList<String> cList;
 		
-		private String cleanObject;
-		private String cleanDiscussion; // 保养/维护费用
-		private String saleDiscussion; // 销量不容乐观
-		private String priceDiscussion; // 价格不满意
-		private String costPerformance; // 性价比
+		public String cleanDiscussion; // 保养/维护费用
+		public String saleDiscussion; // 销量不容乐观 （固定）
+		public String priceDiscussion; // 价格不满意 （固定）
+		public String costPerformance; // 性价比
 		
-		private boolean hasClean;
-		private boolean hasSale;
-		private boolean hasPrice;
-		private boolean hasCostP;
+		public boolean hasClean;
+		public boolean hasSale;
+		public boolean hasPrice;
+		public boolean hasCostP;
 		
 		public CarItem() {
-			reportContent = "";
+			cleanDiscussion = "";
 			saleDiscussion = "销量不容乐观";
 			priceDiscussion = "用户对价格不太满意";
+			costPerformance = "";
 
 			hasClean = false;
 			hasSale = false;
@@ -664,11 +338,100 @@ public class Report {
 			
 			cList = new ArrayList<String>();
 		}
+
+		public String getCarType() {
+			return carType;
+		}
+
+		public void setCarType(String carType) {
+			this.carType = carType;
+		}
+
+		public ArrayList<String> getShortings() {
+			return shortings;
+		}
+
+		public void setShortings(ArrayList<String> shortings) {
+			this.shortings = shortings;
+		}
+
+		public ArrayList<String> getcList() {
+			return cList;
+		}
+
+		public void setcList(ArrayList<String> cList) {
+			this.cList = cList;
+		}
+
+		public String getCleanDiscussion() {
+			return cleanDiscussion;
+		}
+
+		public void setCleanDiscussion(String cleanDiscussion) {
+			this.cleanDiscussion = cleanDiscussion;
+		}
+
+		public String getSaleDiscussion() {
+			return saleDiscussion;
+		}
+
+		public void setSaleDiscussion(String saleDiscussion) {
+			this.saleDiscussion = saleDiscussion;
+		}
+
+		public String getPriceDiscussion() {
+			return priceDiscussion;
+		}
+
+		public void setPriceDiscussion(String priceDiscussion) {
+			this.priceDiscussion = priceDiscussion;
+		}
+
+		public String getCostPerformance() {
+			return costPerformance;
+		}
+
+		public void setCostPerformance(String costPerformance) {
+			this.costPerformance = costPerformance;
+		}
+
+		public boolean isHasClean() {
+			return hasClean;
+		}
+
+		public void setHasClean(boolean hasClean) {
+			this.hasClean = hasClean;
+		}
+
+		public boolean isHasSale() {
+			return hasSale;
+		}
+
+		public void setHasSale(boolean hasSale) {
+			this.hasSale = hasSale;
+		}
+
+		public boolean isHasPrice() {
+			return hasPrice;
+		}
+
+		public void setHasPrice(boolean hasPrice) {
+			this.hasPrice = hasPrice;
+		}
+
+		public boolean isHasCostP() {
+			return hasCostP;
+		}
+
+		public void setHasCostP(boolean hasCostP) {
+			this.hasCostP = hasCostP;
+		}
+
 	}
 	
 	static class carTypeList {
 		public static ArrayList<String> data = new ArrayList<String>(Arrays.asList(
-				"奇瑞", "宝马", "比亚迪", "奥迪", "byd", "别克"
+				"奥迪", "奔驰", "宝马", "比亚迪", "byd", "本田", "丰田", "大众", "别克", "奇瑞"
 		));
 //		public static ArrayList<String> data = new ArrayList<String>() {{
 //			add("奇瑞".trim());

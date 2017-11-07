@@ -41,15 +41,24 @@ public class TransEServlet extends HttpServlet {
 		try {
 //			String positionsPara = request.getParameter("positions"); // 获取参数。所有正例句子的索引值。
 			sents = request.getParameter("sents"); // 获取参数。用户输入的文本。
-			myId = request.getParameter("myId");
-			if (sents == null) {
+			HttpSession session = null; // 获取session
+			try {
+				myId = request.getParameter("myId");
+				session = MySessionContext.getSession(myId);
+			} catch (Exception e) {
+				System.out.println("[TransEServlet]没有myId参数");
+			}
+			if (session == null) {
+				session = request.getSession(false);
+			} // 获取session
+			if (sents == null || sents.equals("null")) {
+				if (session != null) {
+					session.setAttribute("resultFromTransE", "null");
+					session.setAttribute("transEResult", null);
+				}
 				out.print(new String("ERROR|no data!"));
 			}
 			else {
-				HttpSession session = MySessionContext.getSession(myId);
-				if (session == null) {
-					session = request.getSession(false);
-				}
 				if (session == null) {
 					out.print(new String("ERROR|no data!"));
 				}

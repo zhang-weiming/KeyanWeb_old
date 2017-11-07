@@ -145,7 +145,17 @@ $(document).ready(function()
 						 	postReason: 'getReport',
 						 	myId: '',
 						 }, function(result){
-						 	$("div.report").html(result);
+							 if (result != "null") {
+								 parts = result.split("|");
+								 var reportContent = "";
+								 for (var i = 0 ; i < parts.length; i++) {
+									 reportContent += parts[i] + "<br>";
+								 }
+								 $("div.report").html(reportContent);
+							 }
+							 else {
+								 $("div.report").html("null");
+							 }
 						 });
 					});
 				} // if
